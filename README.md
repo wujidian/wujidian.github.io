@@ -10,7 +10,7 @@ npm run dev
 yarn dev
 ```
 
-使用浏览器打开 [http://localhost:3000](http://localhost:3000)以查看运行中的项目。
+使用浏览器打开 [http://localhost:3000](http://localhost:3000)以查看运行中的项目。 
 
 ## 目录结构
 
