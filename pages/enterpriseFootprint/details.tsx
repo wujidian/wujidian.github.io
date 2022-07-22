@@ -8,7 +8,11 @@ import { useEffect, useState } from "react";
 import CheckDetailsBTN from "@components/CheckDetailsBTN/CheckDetailsBTN";
 import { ColumnsType } from "antd/lib/table";
 import { company_Activity_Detail, detailsTable } from "types/types";
-import { GET_CARBON_DAY_BASE_DETAIL_API, GET_ENTERPRISE_CARBON_DAY_BASE_DETAIL_API, GET_ENTERPRISE_CARBON_ECHARTS_DATA_DETAIL_API } from "@request/apis";
+import {
+  GET_CARBON_DAY_BASE_DETAIL_API,
+  GET_ENTERPRISE_CARBON_DAY_BASE_DETAIL_API,
+  GET_ENTERPRISE_CARBON_ECHARTS_DATA_DETAIL_API,
+} from "@request/apis";
 
 const data: detailsTable[] = [
   {
@@ -103,13 +107,16 @@ const EnterpriseFootprintDetails: NextPage = () => {
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [modalShow, setmodalShow] = useState(false);
-  const [avtiveInfo, setActiveInfo] = useState<company_Activity_Detail['data']>({
-    id: 0,
-    emissionLoad: '暂无信息',
-    activityName: '暂无信息',
-    reduce: 0,
-    name: '暂无信息',
-  });
+  const [timeType, setTimeType] = useState("0");
+  const [avtiveInfo, setActiveInfo] = useState<company_Activity_Detail["data"]>(
+    {
+      id: 0,
+      emissionLoad: "暂无信息",
+      activityName: "暂无信息",
+      reduce: 0,
+      name: "暂无信息",
+    }
+  );
   const [testMiniCardList, setTestMiniCardList] = useState<MiniCardProps[]>([]);
   const [park_xAxisData, setPark_xAxisData] = useState<number[] | string[]>([]);
   const [park_carbonEquivalent, setpark_carbonEquivalent] = useState<
@@ -120,11 +127,10 @@ const EnterpriseFootprintDetails: NextPage = () => {
   >([]);
   const [tableData, setTableData] = useState<detailsTable[]>([]);
 
-  const checkDetails = (id:number) => {
+  const checkDetails = (id: number) => {
     console.log(id);
     setmodalShow(true);
   };
-
 
   const getParkInfo = async () => {
     const getAllInfo = (
@@ -163,18 +169,20 @@ const EnterpriseFootprintDetails: NextPage = () => {
       park_carbonEquivalent.push(element.carbonEquivalent);
       park_emissionLoadData.push(element.emissionLoad);
     });
-    
-    setActiveInfo(carbonInfo.data)
+
+    setActiveInfo(carbonInfo.data);
     setTestMiniCardList([...statisticsInfoData]);
     setPark_xAxisData([...xAxisData]);
     setpark_carbonEquivalent([...park_carbonEquivalent]);
     setpark_emissionLoadData([...park_emissionLoadData]);
   };
+  const timeTypeChange = (time: string) => {
+    setTimeType(time);
+  };
 
-
-  useEffect(()=>{
-    getParkInfo()
-  },[])
+  useEffect(() => {
+    getParkInfo();
+  }, []);
 
   return (
     <div className="main ">
@@ -200,7 +208,8 @@ const EnterpriseFootprintDetails: NextPage = () => {
           park_xAxisData={park_xAxisData}
           park_carbonEquivalent={park_carbonEquivalent}
           park_emissionLoad={park_emissionLoadData}
-          
+          setTimeType={(timeType) => timeTypeChange(timeType)}
+          timeType={timeType}
         ></LineChart>
       </div>
       <div className="m24">

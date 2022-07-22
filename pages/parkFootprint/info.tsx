@@ -107,6 +107,7 @@ const ParkFootprintInfo: NextPage = () => {
     string[] | number[]
   >([]);
   const [tableData, setTableData] = useState<detailsTable[]>([]);
+  const [timeType, setTimeType] = useState("0");
 
   const getParkInfo = async () => {
     const getAllInfo = (
@@ -191,7 +192,9 @@ const ParkFootprintInfo: NextPage = () => {
     setTableData([...tableData]);
     setmodalShow(true);
   };
-
+  const timeTypeChange = (time: string) => {
+    setTimeType(time);
+  };
   return (
     <div className="main ">
       <div className="m24">
@@ -216,6 +219,8 @@ const ParkFootprintInfo: NextPage = () => {
           park_xAxisData={park_xAxisData}
           park_carbonEquivalent={park_carbonEquivalent}
           park_emissionLoad={park_emissionLoadData}
+          setTimeType={(timeType) => timeTypeChange(timeType)}
+          timeType={timeType}
         ></LineChart>
       </div>
       <div className="m24">

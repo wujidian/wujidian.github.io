@@ -40,6 +40,7 @@ const EnterpriseFootprintInfo: NextPage = () => {
   const [park_emissionLoadData, setpark_emissionLoadData] = useState<
     string[] | number[]
   >([]);
+  const [timeType, setTimeType] = useState("0");
 
   const getAllInfo = async () => {
     const getAllInfoQuery = (id: number) => {
@@ -80,6 +81,10 @@ const EnterpriseFootprintInfo: NextPage = () => {
 
     setMiniCardList([...statisticsInfoData]);
   };
+  const timeTypeChange = (time: string) => {
+    setTimeType(time);
+  
+  };
   useEffect(() => {
     getAllInfo();
   }, []);
@@ -117,6 +122,8 @@ const EnterpriseFootprintInfo: NextPage = () => {
           park_xAxisData={park_xAxisData}
           park_carbonEquivalent={park_carbonEquivalent}
           park_emissionLoad={park_emissionLoadData}
+          setTimeType={(timeType) => timeTypeChange(timeType)}
+          timeType={timeType}
         ></LineChart>
       </div>
 
