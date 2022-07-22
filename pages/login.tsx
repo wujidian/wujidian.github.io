@@ -42,6 +42,7 @@ const Login: NextPage = () => {
       password,
     });
     message.success("注册成功");
+    setloginType(login_Type.login);
   };
 
   const login = async () => {
@@ -61,10 +62,10 @@ const Login: NextPage = () => {
     dispatch({
       type: "UPDATE_USER",
       payload: {
-        name: '欢迎',
-        img: '/images/Ellipse2.png',
-      }
-    })
+        name: "欢迎",
+        img: "/images/Ellipse2.png",
+      },
+    });
     setLoc("token", res.data.token);
     setTimeout(() => {
       router.push(`/`);
@@ -79,76 +80,83 @@ const Login: NextPage = () => {
   };
 
   return (
-    <div className={styles.loginPage}>
-      <div className={styles.loginForm}>
-        <h2>
-          绿色碳链 ·{" "}
-          {loginType === login_Type.login
-            ? "账户登录"
-            : loginType === login_Type.register
-            ? "账户注册"
-            : "重置密码"}
-        </h2>
+    <div className={styles.loginBc}>
+      <div className={styles.logoBox}>
+        <img src="/images/logo2.png" alt="" />
+        <div className={styles.line}></div>
+        <h2>可信绿色数据服务平台</h2>
+      </div>
+      <div className={styles.loginPage}>
+        <div className={styles.loginForm}>
+          <h2>
+            绿色碳链 ·{" "}
+            {loginType === login_Type.login
+              ? "账户登录"
+              : loginType === login_Type.register
+              ? "账户注册"
+              : "重置密码"}
+          </h2>
 
-        <input
-          className="login-input"
-          value={account}
-          onChange={(e) => {
-            setaccount(e.target.value);
-          }}
-          placeholder="请输入用户名"
-          type="text"
-        />
-        <input
-          className="login-input"
-          type="password"
-          value={password}
-          onChange={(e) => {
-            setpassword(e.target.value);
-          }}
-          placeholder="请输入密码"
-        />
-        {loginType === login_Type.login ? (
-          ""
-        ) : (
+          <input
+            className="login-input"
+            value={account}
+            onChange={(e) => {
+              setaccount(e.target.value);
+            }}
+            placeholder="请输入用户名"
+            type="text"
+          />
           <input
             className="login-input"
             type="password"
-            value={confirmPassword}
+            value={password}
             onChange={(e) => {
-              setconfirmPassword(e.target.value);
+              setpassword(e.target.value);
             }}
-            placeholder="请确认密码"
+            placeholder="请输入密码"
           />
-        )}
-        {loginType === login_Type.register ? (
-          <button onClick={register} className={styles.loginBtn}>
-            注册
-          </button>
-        ) : loginType === login_Type.login ? (
-          <button onClick={login} className={styles.loginBtn}>
-            登录
-          </button>
-        ) : (
-          <button onClick={resetPassword} className={styles.loginBtn}>
-            重置密码
-          </button>
-        )}
-        <div className={styles.checkOutLoginType}>
-          <span onClick={() => setloginType(login_Type.resetPassword)}>
-            忘记密码？
-          </span>
-          <span
-            onClick={() =>
-              setloginType(
-                loginType == login_Type.login
-                  ? login_Type.register
-                  : login_Type.login
-              )
-            }
-          >
-            {loginType == login_Type.login ? "账户注册" : "账户登录"}
-          </span>
+          {loginType === login_Type.login ? (
+            ""
+          ) : (
+            <input
+              className="login-input"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => {
+                setconfirmPassword(e.target.value);
+              }}
+              placeholder="请确认密码"
+            />
+          )}
+          {loginType === login_Type.register ? (
+            <button onClick={register} className={styles.loginBtn}>
+              注册
+            </button>
+          ) : loginType === login_Type.login ? (
+            <button onClick={login} className={styles.loginBtn}>
+              登录
+            </button>
+          ) : (
+            <button onClick={resetPassword} className={styles.loginBtn}>
+              重置密码
+            </button>
+          )}
+          <div className={styles.checkOutLoginType}>
+            <span onClick={() => setloginType(login_Type.resetPassword)}>
+              忘记密码？
+            </span>
+            <span
+              onClick={() =>
+                setloginType(
+                  loginType == login_Type.login
+                    ? login_Type.register
+                    : login_Type.login
+                )
+              }
+            >
+              {loginType == login_Type.login ? "账户注册" : "账户登录"}
+            </span>
+          </div>
         </div>
       </div>
     </div>
