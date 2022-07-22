@@ -25,6 +25,7 @@ const ParkFootprint: NextPage = () => {
   const [parkInfoShow, setParkInfoShow] = useState(true);
   const [parkEchartsShow, setParkEchartsShow] = useState(true);
   const [activeParkInfoShow, setActiveParkInfoShow] = useState(true);
+  const [timeType, setTimeType] = useState("0");
 
   const [parkInfo, setparkInfo] = useState<park_Info["data"]>({
     id: 0,
@@ -74,10 +75,10 @@ const ParkFootprint: NextPage = () => {
     setParkInfoShow(true);
   };
 
-  const getparkEcharts = async (parkId: number) => {
+  const getparkEcharts = async (parkId: number, timeType: string | number) => {
     setParkEchartsShow(false);
     try {
-      let res = await GET_PARK_TABLE_INFO_API(parkId, 0);
+      let res = await GET_PARK_TABLE_INFO_API(parkId, timeType);
       let xAxisData: string[] = [];
       let park_carbonEquivalent: string[] = [];
       let park_emissionLoadData: string[] = [];
@@ -111,10 +112,15 @@ const ParkFootprint: NextPage = () => {
     setActiveParkInfoShow(true);
   };
 
+  const timeTypeChange = (time: string) => {
+    setTimeType(time);
+    getparkEcharts(parkId, time);
+  };
+
   useEffect(() => {
     if (parkId) {
       getParkInfo(parkId);
-      getparkEcharts(parkId);
+      getparkEcharts(parkId, timeType);
       getActiveParkInfos(parkId);
     }
   }, [parkId]);
@@ -155,6 +161,8 @@ const ParkFootprint: NextPage = () => {
             park_xAxisData={park_xAxisData}
             park_carbonEquivalent={park_carbonEquivalent}
             park_emissionLoad={park_emissionLoadData}
+            setTimeType={(timeType) => timeTypeChange(timeType)}
+            timeType={timeType}
           ></LineChart>
         ) : (
           <MySkeleton rows={8} />

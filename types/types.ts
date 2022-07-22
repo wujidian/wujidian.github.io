@@ -103,7 +103,7 @@ export interface park_Table extends success_Response {
 }
 export type park_TableApi = (
   parkid: number,
-  timeType: 0 | 1 | 2
+  timeType: string | number
 ) => Promise<park_Table>;
 
 /**园区碳足迹 ———— 二级页面 ———— 默认页面返回数据类型*/

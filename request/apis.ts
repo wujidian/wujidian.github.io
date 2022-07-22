@@ -76,7 +76,7 @@ export const GET_PARK_TABLE_INFO = "api/zones/carbonFootprint";
  */
 export const GET_PARK_TABLE_INFO_API: park_TableApi = function (
   parkid: number,
-  timeType: 0 | 1 | 2
+  timeType: string | number
 ) {
   return request(
     `${GET_PARK_TABLE_INFO}/${parkid}?type=${timeType}`,

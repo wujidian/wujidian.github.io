@@ -9,6 +9,21 @@ import {
   GridComponentOption,
 } from "echarts";
 import { XAXisOption, YAXisOption } from "echarts/types/dist/shared";
+import styles from "./LineChart.module.sass";
+const timeTypeList = [
+  {
+    label: "本周",
+    id: "0",
+  },
+  {
+    label: "月度",
+    id: "1",
+  },
+  {
+    label: "年度",
+    id: "2",
+  },
+];
 type ECOption = ComposeOption<
   | TitleComponentOption
   | TooltipComponentOption
@@ -24,6 +39,8 @@ type LineChartPorps = {
   park_xAxisData: number[] | string[];
   park_carbonEquivalent: string[] | number[];
   park_emissionLoad: string[] | number[];
+  setTimeType: (timeType: string) => void;
+  timeType: string;
 };
 
 const LineChart: NextPage<LineChartPorps> = (porps: LineChartPorps) => {
@@ -33,6 +50,8 @@ const LineChart: NextPage<LineChartPorps> = (porps: LineChartPorps) => {
     park_xAxisData,
     park_carbonEquivalent,
     park_emissionLoad,
+    setTimeType,
+    timeType,
   } = porps;
   const chartRef: any = useRef(null);
   let myChart: echarts.ECharts | null = null;
@@ -114,11 +133,26 @@ const LineChart: NextPage<LineChartPorps> = (porps: LineChartPorps) => {
     return () => {
       myChart && myChart.dispose();
     };
-  }, [park_carbonEquivalent, park_emissionLoad]);
+  }, [park_carbonEquivalent, park_emissionLoad, park_name]);
 
   return (
-    <div className="LineChart" style={{ textAlign: "center" }}>
+    <div className={styles.LineChart} style={{ textAlign: "center" }}>
       <div ref={chartRef} style={{ height: "370px", width: "100%" }}></div>
+      <div className={styles.timeType}>
+        {timeTypeList.map((item, index) => {
+          return (
+            <span
+              className={item.id === timeType ? styles.active : ""}
+              key={index}
+              onClick={() => {
+                setTimeType(item.id);
+              }}
+            >
+              {item.label}
+            </span>
+          );
+        })}
+      </div>
     </div>
   );
 };
