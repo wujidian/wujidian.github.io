@@ -71,7 +71,7 @@ const Header: NextPage = (req, res) => {
 
   useEffect(() => {
     setCurrent(router.pathname);
-  });
+  }, []);
   const setpark = (id: number, name: string) => {
     dispatch({
       type: "UPDATE_PARK_ID",

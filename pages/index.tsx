@@ -104,7 +104,6 @@ const Index: NextPage = ({ children }: any) => {
             );
           })}
         </div>
-        
       </div>
     </div>
   );

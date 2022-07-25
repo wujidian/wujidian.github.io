@@ -55,7 +55,6 @@ function Mymap({
   }
   useEffect(() => {
     setMap();
-    console.log(1);
   }, [title]);
   return (
     <div

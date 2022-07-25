@@ -20,6 +20,8 @@ const Layout = ({ children, router }: { children: any; router: any }) => {
     Router.push("/");
   }
   useEffect(() => {
+    console.log(state.parkId);
+    
     router.pathname == "/login" ? setheaderShow(false) : setheaderShow(true);
   }, [router.pathname]);
  
