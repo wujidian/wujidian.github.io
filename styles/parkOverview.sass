@@ -72,9 +72,7 @@ $headerPading: 76px
     min-height: $headerPading
     background: radial-gradient(#168ec2,#046088,#014b6b,#02374e)
     display: flex
-    
 
-    
     .index-left
         position: absolute
         width: 30%
@@ -91,12 +89,17 @@ $headerPading: 76px
             // animation: logo-animation 1s ease-in-out infinite
 
         .text-box
-            background: url('/images/bc.png')
+
             width: 320px
             height: 320px
             display: flex
             justify-content: center
             align-items: center
+            .img-rotate
+                background: url('/images/bc.png') 100% 100% no-repeat
+                width: 267px
+                height: 267px
+                animation: rotate 5s linear infinite
 
             .title-box
                 position: absolute
@@ -160,12 +163,10 @@ $headerPading: 76px
         .map
             width: 100%
 
-@keyframes logo-animation
+@keyframes rotate
     0%
         transform: rotate(0deg)
-
-    20%
-        transform: rotate(30deg)
-
-    40%
-        transform: rotate(0deg)
+    50%
+        transform: rotate(180deg)
+    100%
+        transform: rotate(360deg)

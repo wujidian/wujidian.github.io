@@ -7,11 +7,11 @@ import { useRouter } from "next/router";
 import { MyContext } from "@components/MyContext/MyContext";
 import { login_Status } from "types/types";
 import Link from "next/link";
-import { removeLoc, setQuery } from "@public/index";
+import { getLoc, removeLoc, setLoc, setQuery } from "@public/index";
 import { GET_ALL_PARK_LIST_API } from "@request/apis";
 import { ItemType } from "antd/lib/menu/hooks/useItems";
 
-const items: MenuProps["items"] = [
+const navitems: MenuProps["items"] = [
   {
     label: "园区碳总览",
     icon: <img src="/images/Vector-1.png"></img>,
@@ -27,17 +27,12 @@ const items: MenuProps["items"] = [
     icon: <img src="/images/Vector-3.png"></img>,
     key: "/enterpriseFootprint",
   },
-  // {
-  //   label: "碳活动配置",
-  //   icon: <img src="/images/Vector-4.png"></img>,
-  //   key: "configuration",
-  // },
 ];
 
 const Header: NextPage = (req, res) => {
-  const [current, setCurrent] = useState("parkOverview");
-  const [isModalVisible, setisModalVisible] = useState(false);
   const router = useRouter();
+  const [current, setCurrent] = useState("/");
+  const [isModalVisible, setisModalVisible] = useState(false);
   const { state, dispatch } = useContext(MyContext) as any;
   const { loginStatus, userName } = state;
   let [parkList, setParkList] = useState<ItemType[]>([
@@ -53,8 +48,9 @@ const Header: NextPage = (req, res) => {
         ),
     },
   ]);
-  const menu = <Menu items={parkList} />;
+  const dropdownItems = <Menu items={parkList} />;
 
+  /** 退出登录*/
   const loginOut = () => {
     dispatch({
       type: "UPDATE_LOGIN_STATUS",
@@ -63,36 +59,24 @@ const Header: NextPage = (req, res) => {
     removeLoc("token");
     router.push("/login");
   };
-  useEffect(() => {
-    if (loginStatus === login_Status.login) {
-      getAllParkList();
-    }
-  }, [loginStatus]);
 
-  useEffect(() => {
-    setCurrent(router.pathname);
-  }, []);
+  /**切换右上角的园区名称和园区ID*/
   const setpark = (id: number, name: string) => {
     dispatch({
       type: "UPDATE_PARK_ID",
       payload: id,
     });
     dispatch({
-      type: "UPDATE_USER",
-      payload: {
-        name: name,
-        img: "/images/Ellipse2.png",
-      },
+      type: "UPDATE_USER_NAME",
+      payload: name,
     });
   };
-
+  /**切换园区ID*/
   const setParkId = (parkId: number, name: string) => {
     setpark(parkId, name);
-    setQuery("/parkFootprint", {
-      parkId: parkId,
-    });
   };
 
+  /**获取园区列表*/
   const getAllParkList = async () => {
     let res = await GET_ALL_PARK_LIST_API();
     let parkList = res.data.map((item) => {
@@ -103,19 +87,23 @@ const Header: NextPage = (req, res) => {
         ),
       };
     });
-    setpark(res.data[0].id, res.data[0].name);
+    parkList.push({
+      key: 0,
+      label: <span onClick={() => setisModalVisible(true)}>退出登录</span>,
+    });
     setParkList([...parkList]);
   };
 
-  const onClick: MenuProps["onClick"] = (e) => {
-    router.push({
-      pathname: e.key,
-      query: {
-        parkId: state.parkId,
-      },
-    });
-    setCurrent(e.key);
-  };
+  useEffect(() => {
+    if (loginStatus === login_Status.login) {
+      getAllParkList();
+    }
+  }, [loginStatus]);
+
+  useEffect(() => {
+    setCurrent(router.pathname);
+  }, []);
+
   return (
     <div className={styles.header}>
       <div className={styles.logo}>
@@ -126,13 +114,16 @@ const Header: NextPage = (req, res) => {
         </div>
       </div>
       <Menu
-        onClick={onClick}
+        onClick={(e) => {
+          router.push(e.key);
+          setCurrent(e.key);
+        }}
         selectedKeys={[current]}
         mode="horizontal"
-        items={items}
+        items={navitems}
       />
       <div>
-        <Dropdown overlay={menu}>
+        <Dropdown overlay={dropdownItems}>
           <Space>
             <div>
               <span>{userName}</span>

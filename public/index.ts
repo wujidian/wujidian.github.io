@@ -1,7 +1,11 @@
-import Router,{useRouter} from "next/router";
+import Router, { useRouter } from "next/router";
 import { ParsedUrlQueryInput } from "querystring";
 export const getLoc = (itemKey: string) => {
-  return localStorage.getItem(itemKey);
+  if (typeof window !== "undefined") {
+    let saved = localStorage.getItem(itemKey);
+    return saved;
+  }
+  return null;
 };
 export const setLoc = (itemKey: string, itemValue: any) => {
   return localStorage.setItem(itemKey, itemValue);
@@ -19,4 +23,3 @@ export const setQuery = (url: string, query: any) => {
     setLoc(key, query[key]);
   }
 };
-

@@ -87,7 +87,7 @@ const columns: ColumnsType<detailsTable> = [
 const ParkFootprintInfo: NextPage = () => {
   const router = useRouter();
   const { state, dispatch } = useContext(MyContext) as any;
-  const { parkId, typeId } = state;
+  const { parkId, parkFootprintInfoId } = state;
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [modalShow, setmodalShow] = useState(false);
@@ -112,7 +112,7 @@ const ParkFootprintInfo: NextPage = () => {
   const getParkInfo = async () => {
     const getAllInfo = (
       id: number = parkId,
-      activityId: string = typeId,
+      activityId: string = parkFootprintInfoId,
       type: number = 0
     ) => {
       return Promise.all([
@@ -154,8 +154,7 @@ const ParkFootprintInfo: NextPage = () => {
   };
 
   useEffect(() => {
-    console.log(state.typeId);
-
+    console.log(state.parkFootprintInfoId);
     getParkInfo();
   }, []);
 

@@ -1,6 +1,6 @@
 import * as echarts from "echarts";
 import { ComposeOption } from "echarts/core";
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import {
   SeriesOption,
   TitleComponentOption,
@@ -10,7 +10,7 @@ import { MapSeriesOption } from "echarts/types/dist/shared";
 import sicuanData from "./sicuan.json";
 import { mark_List } from "@pages/index";
 import router from "next/router";
-import { setQuery } from "@public/index";
+import { MyContext } from "@components/MyContext/MyContext";
 
 type ECOption = ComposeOption<
   | TitleComponentOption
@@ -23,9 +23,9 @@ type ECOption = ComposeOption<
 const MapChart = ({ markList }: { markList: mark_List }) => {
   const chartRef: any = useRef(null);
   let myChart: echarts.ECharts | null | void = null;
+  const { dispatch } = useContext(MyContext) as any;
   const options: ECOption = {
     backgroundColor: "rgba(0,0,0,0)",
-
     geo: {
       map: "sicuan",
       type: "map",
@@ -93,7 +93,11 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
     (myChart as any).setOption(options);
     myChart.on("click", function (params: any) {
       if (params.componentType === "series") {
-        setQuery("/parkFootprint", { parkId: params.data.id });
+        router.push("/parkFootprint");
+        dispatch({
+          type: "UPDATE_PARK_ID",
+          payload: params.data.id,
+        });
       }
     });
     myChart.dispatchAction({

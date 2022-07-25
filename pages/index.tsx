@@ -33,6 +33,7 @@ const totalData = [
 ];
 const Index: NextPage = ({ children }: any) => {
   let [markList, setmarkList] = useState<mark_List>([]);
+
   useEffect(() => {
     getIndexInfo();
   }, []);
@@ -60,6 +61,7 @@ const Index: NextPage = ({ children }: any) => {
       <div className="index-left">
         <div className="top-left-box">
           <div className="text-box">
+            <div className="img-rotate"></div>
             <div className="title-box">
               <div className="line"></div>
               <span className="title">园区碳总览</span>

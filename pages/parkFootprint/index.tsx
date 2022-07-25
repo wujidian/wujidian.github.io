@@ -16,7 +16,6 @@ import { useContext, useEffect, useState } from "react";
 import { park_Info } from "types/types";
 import { MyContext } from "@components/MyContext/MyContext";
 
-
 const ParkFootprint: NextPage = () => {
   const router = useRouter();
   const { state, dispatch } = useContext(MyContext) as any;
@@ -40,7 +39,7 @@ const ParkFootprint: NextPage = () => {
       type: "Point",
     },
   });
-  const [miniCardList, setTestMiniCardList] = useState<MiniCardProps[]>([
+  const [miniCardList, setMiniCardList] = useState<MiniCardProps[]>([
     {
       id: 0,
       title: "暂无消息",
@@ -65,13 +64,14 @@ const ParkFootprint: NextPage = () => {
   });
 
   const toParkFootprintInfo = (id: string | number) => {
-    router.push(`/parkFootprint/info`);
     dispatch({
-      type: "UPDATE_TYPE_ID",
+      type: "UPDATE_PARK_FOOTPRINT_INFO_ID",
       payload: id,
     });
+    router.push(`/parkFootprint/info`);
+   
   };
-
+  /**获取园区信息*/
   const getParkInfo = async (parkId: number) => {
     setParkInfoShow(false);
     try {
@@ -85,6 +85,7 @@ const ParkFootprint: NextPage = () => {
     setParkInfoShow(true);
   };
 
+  /**获取园区信息*/
   const getparkEcharts = async (parkId: number, timeType: string | number) => {
     setParkEchartsShow(false);
     try {
@@ -103,7 +104,7 @@ const ParkFootprint: NextPage = () => {
     } catch {}
     setParkEchartsShow(true);
   };
-
+  /**获取园区详细信息*/
   const getActiveParkInfos = async (parkId: number) => {
     setActiveParkInfoShow(false);
     try {
@@ -117,7 +118,7 @@ const ParkFootprint: NextPage = () => {
           iconImg: "/images/Group.png",
         };
       });
-      setTestMiniCardList([...statisticsInfoData]);
+      setMiniCardList([...statisticsInfoData]);
     } catch {}
     setActiveParkInfoShow(true);
   };
@@ -133,7 +134,7 @@ const ParkFootprint: NextPage = () => {
       getparkEcharts(parkId, timeType);
       getActiveParkInfos(parkId);
     }
-  }, [parkId]);
+  }, []);
 
   return (
     <div className="parkFootprint">
@@ -186,9 +187,9 @@ const ParkFootprint: NextPage = () => {
         ></Mymap>
       ) : (
         <Mymap
-          longitude='104.066301'
-          latitude='30.572961'
-          title='暂无信息'
+          longitude="104.066301"
+          latitude="30.572961"
+          title="暂无信息"
         ></Mymap>
       )}
       <div>
@@ -219,6 +220,8 @@ const ParkFootprint: NextPage = () => {
             value: item.id,
           };
         })}
+        title={"园区碳核算报告"}
+        generationBasis={"ISO-14064碳核算标准"}
       ></ExportPdf>
     </div>
   );

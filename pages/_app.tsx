@@ -11,14 +11,14 @@ import zhCN from "antd/es/locale/zh_CN";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    
+    <div>
+      <MapScrtpi></MapScrtpi>
       <MyContextWrapper>
-        <MapScrtpi></MapScrtpi>
         <Layout>
           <Component {...pageProps} />
         </Layout>
       </MyContextWrapper>
-   
+    </div>
   );
 }
 

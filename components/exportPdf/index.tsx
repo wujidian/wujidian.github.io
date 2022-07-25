@@ -61,7 +61,7 @@ let detailsList = [
   },
 ];
 
-const ExportPdf = ({ typeOptions }: { typeOptions: any }) => {
+const ExportPdf = ({ typeOptions,title,generationBasis }: { typeOptions: any,title:string,generationBasis:string }) => {
   const { RangePicker } = DatePicker;
   const [checkBoxShow, setcheckBoxShow] = useState(false);
   const [pdfShow, setPdfShow] = useState(false);
@@ -77,9 +77,9 @@ const ExportPdf = ({ typeOptions }: { typeOptions: any }) => {
     <div>
       <div className="m24 flex jcsbcentennt">
         <div>
-          <span className="pageTitle">每日基础数据 </span>
+          <span className="pageTitle">{title} </span>
           <span className="mr5"> 生成依据 </span>
-          <span className="blueTip">2016年碳排放标准规范标准</span>
+          <span className="blueTip">{generationBasis}</span>
         </div>
         <button onClick={() => selectReport()}>查看报告</button>
       </div>
