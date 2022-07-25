@@ -78,6 +78,10 @@ export interface park_Info extends success_Response {
     region: string;
     type: string;
     reduce: string;
+    location:{
+      type:string,
+      coordinates: [number,number]
+    }
   };
 }
 export type parkInfoApi = (parkid: number) => Promise<park_Info>;

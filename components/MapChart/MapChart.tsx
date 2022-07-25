@@ -10,6 +10,7 @@ import { MapSeriesOption } from "echarts/types/dist/shared";
 import sicuanData from "./sicuan.json";
 import { mark_List } from "@pages/index";
 import router from "next/router";
+import { setQuery } from "@public/index";
 
 type ECOption = ComposeOption<
   | TitleComponentOption
@@ -29,7 +30,7 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
       map: "sicuan",
       type: "map",
       geoIndex: 1,
-      zoom: 1.0, //地图的比例
+      zoom: 1.4, //地图的比例
       label: {
         show: true,
         position: "top",
@@ -45,6 +46,7 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
           areaColor: "rgba(216, 241, 220, 0.8)",
         },
       },
+      tooltip: {},
     },
     series: [
       {
@@ -61,8 +63,12 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
     ],
 
     tooltip: {
+      trigger: "item",
       show: true,
       backgroundColor: "#E3EEEA",
+      showContent: true,
+      // triggerOn:'none',
+      alwaysShowContent: true,
       formatter: function (params: any) {
         let tipDom = "";
         tipDom = `<div>
@@ -87,13 +93,13 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
     (myChart as any).setOption(options);
     myChart.on("click", function (params: any) {
       if (params.componentType === "series") {
-        router.push(`/parkFootprint?id=${params.data.id}`);
+        setQuery("/parkFootprint", { parkId: params.data.id });
       }
     });
     myChart.dispatchAction({
       type: "showTip",
       seriesIndex: 0, //第几条series
-      dataIndex: 1, //显示第几个tooltip
+      dataIndex: 0, //显示第几个tooltip
     });
   }
 

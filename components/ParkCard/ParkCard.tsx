@@ -28,8 +28,8 @@ const ParkCard = (ParkCardData: ParkCardData) => {
           <div className={style.phoneRow}>
             <span className={style.parkInfoTitle}>面积</span>
             <span className={style.parkInfoCentent}>{area}</span>
+            <div className="goldenlabel">平方公里</div>
           </div>
-          <div className="goldenlabel">平方公里</div>
         </div>
       </div>
     </div>

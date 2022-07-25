@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { MyContext } from "@components/MyContext/MyContext";
 import { login_Status } from "types/types";
 import Link from "next/link";
-import { removeLoc } from "@public/index";
+import { removeLoc, setQuery } from "@public/index";
 import { GET_ALL_PARK_LIST_API } from "@request/apis";
 import { ItemType } from "antd/lib/menu/hooks/useItems";
 
@@ -39,7 +39,7 @@ const Header: NextPage = (req, res) => {
   const [isModalVisible, setisModalVisible] = useState(false);
   const router = useRouter();
   const { state, dispatch } = useContext(MyContext) as any;
-  const { loginStatus, user } = state;
+  const { loginStatus, userName } = state;
   let [parkList, setParkList] = useState<ItemType[]>([
     {
       key: "0",
@@ -88,7 +88,9 @@ const Header: NextPage = (req, res) => {
 
   const setParkId = (parkId: number, name: string) => {
     setpark(parkId, name);
-    router.push(`/parkFootprint`);
+    setQuery("/parkFootprint", {
+      parkId: parkId,
+    });
   };
 
   const getAllParkList = async () => {
@@ -106,7 +108,12 @@ const Header: NextPage = (req, res) => {
   };
 
   const onClick: MenuProps["onClick"] = (e) => {
-    router.push(`${e.key}`);
+    router.push({
+      pathname: e.key,
+      query: {
+        parkId: state.parkId,
+      },
+    });
     setCurrent(e.key);
   };
   return (
@@ -128,8 +135,12 @@ const Header: NextPage = (req, res) => {
         <Dropdown overlay={menu}>
           <Space>
             <div>
-              <span>{user.name}</span>
-              <img className={styles.avatar} src={user.img} alt="" />
+              <span>{userName}</span>
+              <img
+                className={styles.avatar}
+                src="/images/Ellipse2.png"
+                alt=""
+              />
               <img className={styles.Vector} src="/images/Vector.png" alt="" />
             </div>
           </Space>

@@ -1,10 +1,14 @@
 import { useEffect, useRef } from "react";
 
-function Mymap() {
+function Mymap({
+  longitude,
+  latitude,
+  title
+}) {
   const mapRef = useRef(null);
   function setMap() {
     //初始化地图
-    let center = new TMap.LatLng(30.80859, 104.078417)
+    let center = new TMap.LatLng(latitude, longitude)
     //定义map变量，调用 TMap.Map() 构造函数创建地图
     let map = new TMap.Map(document.getElementById('mapRef'), {
       disableDefaultUI: true,
@@ -14,12 +18,10 @@ function Mymap() {
         type: 'satellite',
         features: ['base', 'building2d']
       },
-   
-
     });
 
 
-    let marker = new TMap.MultiMarker({
+    new TMap.MultiMarker({
       map: map,
       enableDefaultStyle: false,
       styles: {
@@ -28,7 +30,12 @@ function Mymap() {
           width: 20, // 样式宽
           height: 30, // 样式高
           anchor: { x: 10, y: 30 }, // 描点位置
-          src: "https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png" // 样式图片
+          src: "/images/mark.png", // 样式图片
+          size: 16, //文字大小
+          color: '#333', //文字颜色
+          strokeWidth: 2, //文字描边宽度
+          strokeColor: '#fff', //文字描边颜色
+          direction: 'bottom', //文字相对于图片的位置
         }),
       },
       geometries: [
@@ -38,17 +45,18 @@ function Mymap() {
           position: center,
           id: "1",   //点标记唯一标识，后续如果有删除、修改位置等操作，都需要此id
           styleId: 'myStyle',  //指定样式id
-          properties: {//自定义属性
-            title: "我的公司"
-          }
+          content: title
         },
       ],
     });
 
+
+
   }
   useEffect(() => {
     setMap();
-  }, [])
+    console.log(1);
+  }, [title]);
   return (
     <div
       id="mapRef"

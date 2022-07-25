@@ -1,8 +1,10 @@
+$content: 100vh
+$headerPading: 76px
 .enterpriseFootprint
-    width: 60%
+    width: 70%
     margin: 0 auto
 .parkFootprint
-    width: 60%
+    width: 70%
     margin: 0 auto
     .TotalCountTitle
         font-style: normal
@@ -67,16 +69,18 @@
 
 .parkOverview
     width: 100%
-    min-height: 100vh
+    min-height: $headerPading
     background: radial-gradient(#168ec2,#046088,#014b6b,#02374e)
     display: flex
+    position: relative
     .index-left
+        position: absolute
         width: 30%
     .top-left-box
         width: 320px
         height: 320px
         z-index: 1
-        position: relative
+
         .top-left-img
             width: 320px
             height: 339px
@@ -109,11 +113,29 @@
                     line-height: 38px
                     color: #fff
     .map
-        width: 70%
+        width: 100%
+    .index-right
+        width: 20%
+        position: absolute
+        bottom: 120px
+        right: 0
+        background-color: rgba(0,0,0,0.5)
+        color: #fff
+
+        .index-right-item
+            padding-top: 16px
+            display: flex
+            flex-wrap: wrap
+            div
+                width: 50%
+                display: flex
+                flex-direction: column
+                align-items: center
+                margin-bottom: 16px
+
 .jcsbcentennt
     justify-content: space-between
     align-items: center
-
 
 @media screen and (max-width: 1200px)
     .parkFootprint

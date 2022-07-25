@@ -3,6 +3,7 @@ import MapChart from "@components/MapChart/MapChart";
 import LineBarChart from "@components/LineBarChart/LineBarChart";
 import { useEffect, useState } from "react";
 import { GET_INDEX_INFO_API } from "@request/apis";
+import { getLoc } from "@public/index";
 export type mark_List = Array<{
   id: number;
   toDay_data: string | number;
@@ -12,6 +13,24 @@ export type mark_List = Array<{
   park_seriesData: Array<string>;
 }>;
 const locToDay = new Date().toLocaleDateString();
+const totalData = [
+  {
+    name: "绿电累计发电量",
+    value: "15456 kWh",
+  },
+  {
+    name: "园区累计用电量",
+    value: "15 kWh",
+  },
+  {
+    name: "园区今日用电量",
+    value: "1515万 kWh",
+  },
+  {
+    name: "园区本月发电量",
+    value: "1515万 kWh",
+  },
+];
 const Index: NextPage = ({ children }: any) => {
   let [markList, setmarkList] = useState<mark_List>([]);
   useEffect(() => {
@@ -35,6 +54,9 @@ const Index: NextPage = ({ children }: any) => {
   };
   return (
     <div className="parkOverview">
+      <div className="map">
+        <MapChart markList={markList}></MapChart>
+      </div>
       <div className="index-left">
         <div className="top-left-box">
           <div className="text-box">
@@ -61,8 +83,28 @@ const Index: NextPage = ({ children }: any) => {
           })}
         </div>
       </div>
-      <div className="map">
-        <MapChart markList={markList}></MapChart>
+      <div className="index-right">
+        <div className="index-right-item">
+          {totalData.map((item, index) => {
+            return (
+              <div key={index}>
+                <span>{item.value}</span>
+                <span>{item.name}</span>
+              </div>
+            );
+          })}
+        </div>
+        <div className="index-right-item">
+          {totalData.map((item, index) => {
+            return (
+              <div key={index}>
+                <span>{item.value}</span>
+                <span>{item.name}</span>
+              </div>
+            );
+          })}
+        </div>
+        
       </div>
     </div>
   );

@@ -15,8 +15,7 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { park_Info } from "types/types";
 import { MyContext } from "@components/MyContext/MyContext";
-import exportPDF from "@public/exportPDF";
-import { Checkbox, DatePicker, Modal, Space } from "antd";
+
 
 const ParkFootprint: NextPage = () => {
   const router = useRouter();
@@ -25,8 +24,7 @@ const ParkFootprint: NextPage = () => {
   const [parkInfoShow, setParkInfoShow] = useState(true);
   const [parkEchartsShow, setParkEchartsShow] = useState(true);
   const [activeParkInfoShow, setActiveParkInfoShow] = useState(true);
-  const [timeType, setTimeType] = useState("0");
-
+  const [timeType, setTimeType] = useState("1");
   const [parkInfo, setparkInfo] = useState<park_Info["data"]>({
     id: 0,
     name: "暂无信息",
@@ -37,6 +35,10 @@ const ParkFootprint: NextPage = () => {
     region: "暂无信息",
     type: "暂无信息",
     reduce: "0.00",
+    location: {
+      coordinates: [0, 0],
+      type: "Point",
+    },
   });
   const [miniCardList, setTestMiniCardList] = useState<MiniCardProps[]>([
     {
@@ -54,9 +56,13 @@ const ParkFootprint: NextPage = () => {
   const [park_emissionLoadData, setpark_emissionLoadData] = useState<
     string[] | number[]
   >([]);
-  const [typeOptions, setTypeOptions] = useState<
-    { label: string; value: string | number }[]
-  >([]);
+  const [laAndLo, setLaAndLo] = useState<{
+    latitude: number;
+    longitude: number;
+  }>({
+    latitude: 30.572961,
+    longitude: 104.066301,
+  });
 
   const toParkFootprintInfo = (id: string | number) => {
     router.push(`/parkFootprint/info`);
@@ -71,6 +77,10 @@ const ParkFootprint: NextPage = () => {
     try {
       let res = await GET_PARK_CARBON_INFO_API(parkId);
       setparkInfo(res.data);
+      setLaAndLo({
+        latitude: res.data.location.coordinates[1],
+        longitude: res.data.location.coordinates[0],
+      });
     } catch (err) {}
     setParkInfoShow(true);
   };
@@ -168,7 +178,19 @@ const ParkFootprint: NextPage = () => {
           <MySkeleton rows={8} />
         )}
       </div>
-      <Mymap></Mymap>
+      {parkInfo.name !== "暂无信息" ? (
+        <Mymap
+          longitude={laAndLo.longitude}
+          latitude={laAndLo.latitude}
+          title={parkInfo.name}
+        ></Mymap>
+      ) : (
+        <Mymap
+          longitude='104.066301'
+          latitude='30.572961'
+          title='暂无信息'
+        ></Mymap>
+      )}
       <div>
         {activeParkInfoShow ? (
           <div>
