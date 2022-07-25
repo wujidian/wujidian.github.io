@@ -102,6 +102,10 @@ const EnterpriseFootprint: NextPage = () => {
     region: "暂无信息",
     type: "暂无信息",
     reduce: "0.00",
+    location: {
+      coordinates: [0, 0],
+      type: "Point",
+    },
   });
   const [tableData, setTableData] = useState<overviewData[]>([]);
   const getAllInfo = async () => {
