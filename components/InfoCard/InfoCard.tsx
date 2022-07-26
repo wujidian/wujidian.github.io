@@ -7,15 +7,19 @@ export type InfoCardData = {
   name: string;
   loc: string;
   addOrSub: add | sub;
-  total: number;
-  deviation: string;
+  total: string | number;
+  deviation: string | number;
 };
 const InfoCard = (InfoCardData: InfoCardData) => {
   const { name, loc, addOrSub, total, deviation } = InfoCardData;
   return (
     <div className={styles.InfoCardBox}>
       <div className={styles.left}>
-        <img className={styles.leftImg} src="/images/Group.png" alt="加载失败"></img>
+        <img
+          className={styles.leftImg}
+          src="/images/Group.png"
+          alt="加载失败"
+        ></img>
         <div className={styles.leftText}>
           <span className={styles.title}>{name}</span>
           <span className={styles.loc}>{loc}</span>

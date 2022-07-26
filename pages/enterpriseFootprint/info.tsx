@@ -1,6 +1,8 @@
 import { InfoCardData } from "@components/InfoCard/InfoCard";
 import LineChart from "@components/LineChart/LineChart";
 import MiniCard, { MiniCardProps } from "@components/MiniCard/MiniCard";
+import { MyContext } from "@components/MyContext/MyContext";
+import MySkeleton from "@components/MySkeleton";
 import ParkCard from "@components/ParkCard/ParkCard";
 import TotalCount from "@components/TotalCount/TotalCount";
 import {
@@ -11,15 +13,20 @@ import {
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { company_Info } from "types/types";
 
 const EnterpriseFootprintInfo: NextPage = () => {
+  const { state, dispatch } = useContext(MyContext) as any;
+  const { enterpriseFootprintInfoId } = state;
   const router = useRouter();
-  const toInfo = () => {
+  const toInfo = (id: string | number) => {
     router.push(`/enterpriseFootprint/details`);
+    dispatch({
+      type: "UPDATE_ENTERPRISE_FOOTPRINT_DETAILS_ID",
+      payload: id,
+    });
   };
-
   /**公司详情*/
   const [companyDetails, setCompanyDetails] = useState<company_Info["data"]>({
     address: "暂无信息",
@@ -40,54 +47,73 @@ const EnterpriseFootprintInfo: NextPage = () => {
   const [park_emissionLoadData, setpark_emissionLoadData] = useState<
     string[] | number[]
   >([]);
-  const [timeType, setTimeType] = useState("0");
+  const [timeType, setTimeType] = useState("1");
+  const [enterpriseInfoLoding, setEnterpriseInfoLoding] = useState(true);
+  const [enterpriseEchartsLoding, setEnterpriseEchartsLoding] = useState(true);
+  const [enterpriseDayBaseLoding, setEnterpriseDayBaseLoding] = useState(true);
 
-  const getAllInfo = async () => {
-    const getAllInfoQuery = (id: number) => {
-      return Promise.all([
-        GET_ENTERPRISE_CARBON_INFO_API(2),
-        GET_ENTERPRISE_CARBON_ECHARTS_DATA_API(2, 1),
-        GET_ENTERPRISE_CARBON_DAY_BASE_API(1),
-      ]);
-    };
-    let res = await getAllInfoQuery(2);
-    const [companyDetails, echartsData, statisticsInfo] = res;
-    setCompanyDetails(companyDetails.data);
-
-    // echarts 的折线图数据
-    let xAxisData: string[] = [];
-    let park_carbonEquivalent: string[] = [];
-    let park_emissionLoadData: string[] = [];
-    echartsData.data.forEach((element) => {
-      xAxisData.push(element.startTime);
-      park_carbonEquivalent.push(element.carbonEquivalent);
-      park_emissionLoadData.push(element.emissionLoad);
-    });
-
-    setPark_xAxisData([...xAxisData]);
-    setpark_carbonEquivalent([...park_carbonEquivalent]);
-    setpark_emissionLoadData([...park_emissionLoadData]);
-
-    // 处理数据
-    const statisticsInfoData = statisticsInfo.data.map((item) => {
-      return {
-        id: item.id,
-        title: item.name,
-        emissions: item.emissionLoad,
-        time: item.startTime,
-        iconImg: "/images/Group.png",
-      };
-    });
-
-    setMiniCardList([...statisticsInfoData]);
+  /**获取企业详细信息*/
+  const getEnterpriseInfo = async () => {
+    setEnterpriseInfoLoding(false);
+    try {
+      let companyDetails = await GET_ENTERPRISE_CARBON_INFO_API(
+        enterpriseFootprintInfoId
+      );
+      setCompanyDetails(companyDetails.data);
+    } catch {}
+    setEnterpriseInfoLoding(true);
   };
-  const timeTypeChange = (time: string) => {
-    setTimeType(time);
-  
+  /**获取企业Echarts数据*/
+  const getEnterpriseEchartsData = async () => {
+    setEnterpriseEchartsLoding(false);
+    try {
+      let echartsData = await GET_ENTERPRISE_CARBON_ECHARTS_DATA_API(
+        enterpriseFootprintInfoId,
+        timeType
+      );
+      let xAxisData: string[] = [];
+      let park_carbonEquivalent: string[] = [];
+      let park_emissionLoadData: string[] = [];
+      echartsData.data.forEach((element) => {
+        xAxisData.push(element.start_time);
+        park_carbonEquivalent.push(element.carbonEquivalent);
+        park_emissionLoadData.push(element.emissionLoad);
+      });
+      setPark_xAxisData([...xAxisData]);
+      setpark_carbonEquivalent([...park_carbonEquivalent]);
+      setpark_emissionLoadData([...park_emissionLoadData]);
+    } catch {}
+    setEnterpriseEchartsLoding(true);
   };
+
+  /**获取企业每日数据列表*/
+  const getEnterpriseDayBase = async () => {
+    setEnterpriseDayBaseLoding(false);
+    try {
+      const statisticsInfo = await GET_ENTERPRISE_CARBON_DAY_BASE_API(
+        enterpriseFootprintInfoId
+      );
+      const statisticsInfoData = statisticsInfo.data.map((item) => {
+        return {
+          id: item.id,
+          title: item.name,
+          emissions: item.emissionLoad,
+          time: item.startTime,
+          iconImg: "/images/Group.png",
+        };
+      });
+      setMiniCardList([...statisticsInfoData]);
+    } catch {}
+    setEnterpriseDayBaseLoding(true);
+  };
+
   useEffect(() => {
-    getAllInfo();
-  }, []);
+    getEnterpriseInfo();
+    getEnterpriseDayBase();
+  }, [enterpriseFootprintInfoId]);
+  useEffect(() => {
+    getEnterpriseEchartsData();
+  }, [enterpriseFootprintInfoId, timeType]);
   return (
     <div className="parkFootprint">
       <div className="m24">
@@ -98,49 +124,64 @@ const EnterpriseFootprintInfo: NextPage = () => {
 
       <div className="topCardBox">
         <div className="parkcard-box">
-          <ParkCard
-            parkName={companyDetails.name}
-            parkLoc={companyDetails.address}
-            parktype={companyDetails.type}
-            parknum={512}
-            area={12.89}
-          />
+          {enterpriseInfoLoding ? (
+            <ParkCard
+              parkName={companyDetails.name}
+              parkLoc={companyDetails.address}
+              parktype={companyDetails.type}
+              create_time={companyDetails.create_time}
+            />
+          ) : (
+            <MySkeleton />
+          )}
         </div>
         <div className="TotalCount-box">
-          <TotalCount
-            total={companyDetails.emissionLoad}
-            addOrsub={false}
-            deviation={companyDetails.reduce}
-          />
+          {enterpriseInfoLoding ? (
+            <TotalCount
+              total={companyDetails.emissionLoad}
+              addOrsub={false}
+              deviation={companyDetails.reduce}
+            />
+          ) : (
+            <MySkeleton />
+          )}
         </div>
       </div>
 
       <div className="lineChartBox">
-        <LineChart
-          park_name={""}
-          toDay_data={0}
-          park_xAxisData={park_xAxisData}
-          park_carbonEquivalent={park_carbonEquivalent}
-          park_emissionLoad={park_emissionLoadData}
-          setTimeType={(timeType) => timeTypeChange(timeType)}
-          timeType={timeType}
-        ></LineChart>
+        {enterpriseEchartsLoding ? (
+          <LineChart
+            park_name={""}
+            toDay_data={0}
+            park_xAxisData={park_xAxisData}
+            park_carbonEquivalent={park_carbonEquivalent}
+            park_emissionLoad={park_emissionLoadData}
+            setTimeType={(timeType) => setTimeType(timeType)}
+            timeType={timeType}
+          ></LineChart>
+        ) : (
+          <MySkeleton rows={8} />
+        )}
       </div>
 
       <div>
-        {miniCardList.map((item, i) => {
-          return (
-            <MiniCard
-              linkFun={toInfo}
-              time={item.time}
-              title={item.title}
-              iconImg={item.iconImg}
-              emissions={item.emissions}
-              key={i.toString()}
-              id={item.id}
-            ></MiniCard>
-          );
-        })}
+        {enterpriseDayBaseLoding ? (
+          miniCardList.map((item, i) => {
+            return (
+              <MiniCard
+                linkFun={() => toInfo(item.id)}
+                time={item.time}
+                title={item.title}
+                iconImg={item.iconImg}
+                emissions={item.emissions}
+                key={i.toString()}
+                id={item.id}
+              ></MiniCard>
+            );
+          })
+        ) : (
+          <MySkeleton />
+        )}
       </div>
     </div>
   );

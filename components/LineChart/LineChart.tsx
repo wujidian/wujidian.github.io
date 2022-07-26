@@ -40,7 +40,7 @@ type LineChartPorps = {
   park_carbonEquivalent: string[] | number[];
   park_emissionLoad: string[] | number[];
   setTimeType: (timeType: string) => void;
-  timeType: string;
+  timeType: string|number;
 };
 
 const LineChart: NextPage<LineChartPorps> = (porps: LineChartPorps) => {
@@ -142,7 +142,7 @@ const LineChart: NextPage<LineChartPorps> = (porps: LineChartPorps) => {
         {timeTypeList.map((item, index) => {
           return (
             <span
-              className={item.id === timeType ? styles.active : ""}
+              className={item.id == timeType ? styles.active : ""}
               key={index}
               onClick={() => {
                 setTimeType(item.id);

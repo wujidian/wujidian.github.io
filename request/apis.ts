@@ -209,7 +209,7 @@ export const GET_ENTERPRISE_CARBON_INFO_API: companyInfoApi = function (
 export const GET_ENTERPRISE_CARBON_ECHARTS_DATA = "api/company/carbonFootprint";
 /** 获取企业碳足迹 二级路由 eCharts 折线图数据 */
 export const GET_ENTERPRISE_CARBON_ECHARTS_DATA_API: company_eChartsApi =
-  function (id: number, type: number) {
+  function (id: number, type: number | string) {
     return request(
       `${GET_ENTERPRISE_CARBON_ECHARTS_DATA}/${id}?type=${type}`,
       {},

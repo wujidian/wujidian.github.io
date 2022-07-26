@@ -22,8 +22,28 @@ type ECOption = ComposeOption<
 
 const MapChart = ({ markList }: { markList: mark_List }) => {
   const chartRef: any = useRef(null);
+  const busLines = [
+    {
+      coords: [],
+      name: "xx",
+    },
+  ];
   let myChart: echarts.ECharts | null | void = null;
   const { dispatch } = useContext(MyContext) as any;
+  let line: any = [];
+  markList.forEach((item, index) => {
+    if (index < markList.length - 1) {
+      const setOff: number[] = [item.value[0], item.value[1]] as number[];
+      const setOn: number[] = [
+        markList[index + 1].value[0],
+        markList[index + 1].value[1],
+      ] as number[];
+      line.push({
+        coords: [setOff, setOn],
+      });
+    }
+  });
+
   const options: ECOption = {
     backgroundColor: "rgba(0,0,0,0)",
     geo: {
@@ -48,6 +68,7 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
       },
       tooltip: {},
     },
+
     series: [
       {
         type: "effectScatter",
@@ -60,6 +81,44 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
         symbolSize: [30, 52],
         data: markList,
       },
+      {
+        type: "effectScatter",
+        coordinateSystem: "geo",
+        rippleEffect: {
+          //涟漪特效
+          number: 1, //涟漪的最大值
+        },
+        symbol: "image:///images/markBc.png",
+        symbolSize: [70, 70],
+        symbolOffset: [0, 20],
+        data: markList,
+      },
+      {
+        type: "lines",
+        coordinateSystem: "geo",
+        lineStyle: {
+          width: 5,
+          opacity: 1,
+          color: {
+            type: "linear",
+            x: 0,
+            y: 0,
+            x2: 1,
+            y2: 0,
+            colorStops: [
+              {
+                offset: 0,
+                color: "rgb(246,205,125)",
+              },
+              {
+                offset: 1,
+                color: "rgb(6,205,162)",
+              },
+            ],
+          },
+        },
+        data: line,
+      },
     ],
 
     tooltip: {
@@ -70,18 +129,24 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
       // triggerOn:'none',
       alwaysShowContent: true,
       formatter: function (params: any) {
-        let tipDom = "";
-        tipDom = `<div>
-        <img src='/images/Vector-6.png'/>
-        <span style="font-size: 16px;color: #000;">${params.name}</span>
-        <br/>
-        <span>
-          <span style="font-size: 12px;color: #778399;">碳排放量</span>
-          <span style="font-size: 16px;color: #052835;">${params.value[2]}</span>
-          <span style="background: #F6CD7D; border-radius: 37px;padding: 2px 6px; font-size: 12px;">kgCO2e</span>
-        </span>
-        </div>`;
-        return tipDom;
+        if (params.componentSubType === "lines") {
+          return "";
+        } else {
+          let tipDom = "";
+          tipDom = `<div>
+          <img src='/images/Vector-6.png'/>
+          <span style="font-size: 16px;color: #000;">${params.name}</span>
+          <br/>
+          <span>
+            <span style="font-size: 12px;color: #778399;">碳排放量</span>
+            <span style="font-size: 16px;color: #052835;">${
+              params.value[2] || 0.00
+            }</span>
+            <span style="background: #F6CD7D; border-radius: 37px;padding: 2px 6px; font-size: 12px;">kgCO2e</span>
+          </span>
+          </div>`;
+          return tipDom;
+        }
       },
     },
   };

@@ -7,7 +7,7 @@ import TableModal from "@components/TableModal/TableModal";
 import { useContext, useEffect, useState } from "react";
 import CheckDetailsBTN from "@components/CheckDetailsBTN/CheckDetailsBTN";
 import { ColumnsType } from "antd/lib/table";
-import { detailsTable } from "types/types";
+import { detailsTable, park_Activity } from "types/types";
 import { useRouter } from "next/router";
 import {
   GET_PARK_ACTIVITY_INFO_API,
@@ -16,6 +16,7 @@ import {
   GET_PARK_ACTIVITY_DAY_BASE_DETAIL_API,
 } from "@request/apis";
 import { MyContext } from "@components/MyContext/MyContext";
+import MySkeleton from "@components/MySkeleton";
 
 const columns: ColumnsType<detailsTable> = [
   {
@@ -85,18 +86,16 @@ const columns: ColumnsType<detailsTable> = [
 ];
 
 const ParkFootprintInfo: NextPage = () => {
-  const router = useRouter();
   const { state, dispatch } = useContext(MyContext) as any;
   const { parkId, parkFootprintInfoId } = state;
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [modalShow, setmodalShow] = useState(false);
-  const [avtiveInfo, setActiveInfo] = useState<InfoCardData>({
+  const [avtiveInfo, setActiveInfo] = useState<park_Activity["data"]>({
     name: "暂无信息",
-    loc: "暂无信息",
-    addOrSub: false,
-    total: 0,
-    deviation: "",
+    emissionLoad: "暂无信息",
+    activityName: "",
+    reduce: 0,
   });
   const [testMiniCardList, setTestMiniCardList] = useState<MiniCardProps[]>([]);
   const [park_xAxisData, setPark_xAxisData] = useState<number[] | string[]>([]);
@@ -107,56 +106,82 @@ const ParkFootprintInfo: NextPage = () => {
     string[] | number[]
   >([]);
   const [tableData, setTableData] = useState<detailsTable[]>([]);
-  const [timeType, setTimeType] = useState("0");
+  const [timeType, setTimeType] = useState(1);
+  const [parkInfoShow, setParkInfoShow] = useState(true);
+  const [parkEchartsShow, setParkEchartsShow] = useState(true);
+  const [activeParkInfoShow, setActiveParkInfoShow] = useState(true);
 
-  const getParkInfo = async () => {
-    const getAllInfo = (
-      id: number = parkId,
-      activityId: string = parkFootprintInfoId,
-      type: number = 0
-    ) => {
-      return Promise.all([
-        GET_PARK_ACTIVITY_INFO_API(id, activityId),
-        GET_PARK_ACTIVITY_DAY_BASE_API(id, activityId),
-        GET_PARK_ACTIVITY_ECHARTS_DATA_API(id, activityId, type),
-      ]);
-    };
-    let alliInfo = await getAllInfo();
-    const [carbonInfo, statisticsInfo, tableInfo] = alliInfo;
-    // 处理卡片列表的数据
-    const statisticsInfoData = statisticsInfo.data.map((item) => {
-      return {
-        id: item.id,
-        title: item.name,
-        emissions: item.emissionLoad,
-        time: item.startTime,
-        iconImg: "/images/Group.png",
-        appendButto: CheckDetailsBTN({
-          btnClickFun: () => checkDetails(item.id),
-          btnText: "查看详情",
-        }),
-      };
-    });
-    // echarts 的折线图数据
-    let xAxisData: string[] = [];
-    let park_carbonEquivalent: string[] = [];
-    let park_emissionLoadData: string[] = [];
-    tableInfo.data.forEach((element) => {
-      xAxisData.push(element.startTime);
-      park_carbonEquivalent.push(element.carbonEquivalent);
-      park_emissionLoadData.push(element.emissionLoad);
-    });
+  /**获取园区详细信息*/
+  const getParkDetaliInfo = async () => {
+    setParkInfoShow(false);
+    try {
+      let res = await GET_PARK_ACTIVITY_INFO_API(parkId, parkFootprintInfoId);
+      let data = res.data;
+      setActiveInfo({ ...data });
+    } catch {}
+    setParkInfoShow(true);
+  };
 
-    setTestMiniCardList([...statisticsInfoData]);
-    setPark_xAxisData([...xAxisData]);
-    setpark_carbonEquivalent([...park_carbonEquivalent]);
-    setpark_emissionLoadData([...park_emissionLoadData]);
+  /**获取园区eCharts详细信息*/
+  const getParkDetaliEchartsInfo = async () => {
+    setParkEchartsShow(false);
+    try {
+      let res = await GET_PARK_ACTIVITY_ECHARTS_DATA_API(
+        parkId,
+        parkFootprintInfoId,
+        timeType
+      );
+      // echarts 的折线图数据
+      let xAxisData: string[] = [];
+      let park_carbonEquivalent: string[] = [];
+      let park_emissionLoadData: string[] = [];
+      res.data.forEach((element) => {
+        xAxisData.push(element.startTime);
+        park_carbonEquivalent.push(element.carbonEquivalent);
+        park_emissionLoadData.push(element.emissionLoad);
+      });
+      setPark_xAxisData([...xAxisData]);
+      setpark_carbonEquivalent([...park_carbonEquivalent]);
+      setpark_emissionLoadData([...park_emissionLoadData]);
+    } catch {}
+    setParkEchartsShow(true);
+  };
+
+  /**获取园区每日基础数据*/
+  const getParkDetaliDayBaseInfo = async () => {
+    setParkEchartsShow(false);
+    try {
+      let res = await GET_PARK_ACTIVITY_DAY_BASE_API(
+        parkId,
+        parkFootprintInfoId
+      );
+      // 处理卡片列表的数据
+      const statisticsInfoData = res.data.map((item) => {
+        return {
+          id: item.id,
+          title: item.name,
+          emissions: item.emissionLoad,
+          time: item.startTime,
+          iconImg: "/images/Group.png",
+          appendButto: CheckDetailsBTN({
+            btnClickFun: () => checkDetails(item.id),
+            btnText: "查看详情",
+          }),
+        };
+      });
+      setTestMiniCardList([...statisticsInfoData]);
+    } catch {}
+    setParkEchartsShow(true);
   };
 
   useEffect(() => {
-    console.log(state.parkFootprintInfoId);
-    getParkInfo();
-  }, []);
+    getParkDetaliInfo();
+    getParkDetaliDayBaseInfo();
+  }, [parkId, parkFootprintInfoId]);
+
+  useEffect(() => {
+    getParkDetaliEchartsInfo();
+  }, [parkId, parkFootprintInfoId, timeType]);
 
   const checkDetails = async (id: number) => {
     console.log(id);
@@ -191,9 +216,7 @@ const ParkFootprintInfo: NextPage = () => {
     setTableData([...tableData]);
     setmodalShow(true);
   };
-  const timeTypeChange = (time: string) => {
-    setTimeType(time);
-  };
+
   return (
     <div className="main ">
       <div className="m24">
@@ -202,25 +225,32 @@ const ParkFootprintInfo: NextPage = () => {
         </div>
       </div>
       <div className="mt24">
-        <InfoCard
-          name={avtiveInfo.name}
-          loc={avtiveInfo.loc}
-          addOrSub={avtiveInfo.addOrSub}
-          total={avtiveInfo.total}
-          deviation={avtiveInfo.deviation}
-        ></InfoCard>
+        {parkInfoShow ? (
+          <InfoCard
+            name={avtiveInfo.name}
+            loc={avtiveInfo.activityName}
+            addOrSub={false}
+            total={avtiveInfo.emissionLoad}
+            deviation={avtiveInfo.reduce}
+          ></InfoCard>
+        ) : (
+          <MySkeleton />
+        )}
       </div>
 
       <div className="lineChartBox">
-        <LineChart
-          park_name={"交通用能碳足迹"}
-          toDay_data={0}
-          park_xAxisData={park_xAxisData}
-          park_carbonEquivalent={park_carbonEquivalent}
-          park_emissionLoad={park_emissionLoadData}
-          setTimeType={(timeType) => timeTypeChange(timeType)}
-          timeType={timeType}
-        ></LineChart>
+        {
+          parkEchartsShow ? (<LineChart
+            park_name={"交通用能碳足迹"}
+            toDay_data={0}
+            park_xAxisData={park_xAxisData}
+            park_carbonEquivalent={park_carbonEquivalent}
+            park_emissionLoad={park_emissionLoadData}
+            setTimeType={(timeType) => setTimeType(Number(timeType))}
+            timeType={timeType}
+          ></LineChart>):(<MySkeleton rows={8}/>)
+        }
+        
       </div>
       <div className="m24">
         <span className="pageTitle">每日基础数据 </span>
@@ -228,19 +258,23 @@ const ParkFootprintInfo: NextPage = () => {
         <span className="blueTip">2016年碳排放标准规范标准</span>
       </div>
       <div>
-        {testMiniCardList.map((item, i) => {
-          return (
-            <MiniCard
-              id={item.id}
-              appendButto={item.appendButto}
-              time={item.time}
-              title={item.title}
-              iconImg={item.iconImg}
-              emissions={item.emissions}
-              key={i.toString()}
-            ></MiniCard>
-          );
-        })}
+        {
+          parkEchartsShow ? (
+            testMiniCardList.map((item, i) => {
+              return (
+                <MiniCard
+                  id={item.id}
+                  appendButto={item.appendButto}
+                  time={item.time}
+                  title={item.title}
+                  iconImg={item.iconImg}
+                  emissions={item.emissions}
+                  key={i.toString()}
+                ></MiniCard>
+              );
+            })
+          ):(<MySkeleton />)
+        }
       </div>
       <TableModal
         show={modalShow}

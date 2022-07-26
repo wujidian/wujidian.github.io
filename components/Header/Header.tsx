@@ -34,7 +34,7 @@ const Header: NextPage = (req, res) => {
   const [current, setCurrent] = useState("/");
   const [isModalVisible, setisModalVisible] = useState(false);
   const { state, dispatch } = useContext(MyContext) as any;
-  const { loginStatus, userName } = state;
+  const { loginStatus, userName,parkId } = state;
   let [parkList, setParkList] = useState<ItemType[]>([
     {
       key: "0",
@@ -92,17 +92,33 @@ const Header: NextPage = (req, res) => {
       label: <span onClick={() => setisModalVisible(true)}>退出登录</span>,
     });
     setParkList([...parkList]);
+    const activePark = parkList.find((item) => item.key == parkId);
+    if(activePark){
+      dispatch({
+          type: "UPDATE_USER_NAME",
+          payload: activePark.label.props.children,
+        })
+    }
+    
+
   };
 
   useEffect(() => {
     if (loginStatus === login_Status.login) {
       getAllParkList();
+     
+      
+      
+      // dispatch({
+      //   type: "UPDATE_USER_NAME",
+      //   payload: getLoc("userName"),
+      // })
     }
   }, [loginStatus]);
 
   useEffect(() => {
     setCurrent(router.pathname);
-  }, []);
+  }, [router.pathname]);
 
   return (
     <div className={styles.header}>

@@ -69,7 +69,6 @@ const ParkFootprint: NextPage = () => {
       payload: id,
     });
     router.push(`/parkFootprint/info`);
-   
   };
   /**获取园区信息*/
   const getParkInfo = async (parkId: number) => {
@@ -123,18 +122,16 @@ const ParkFootprint: NextPage = () => {
     setActiveParkInfoShow(true);
   };
 
-  const timeTypeChange = (time: string) => {
-    setTimeType(time);
-    getparkEcharts(parkId, time);
-  };
-
   useEffect(() => {
     if (parkId) {
       getParkInfo(parkId);
-      getparkEcharts(parkId, timeType);
       getActiveParkInfos(parkId);
     }
-  }, []);
+  }, [parkId]);
+
+  useEffect(() => {
+    getparkEcharts(parkId, timeType);
+  }, [parkId, timeType]);
 
   return (
     <div className="parkFootprint">
@@ -172,7 +169,7 @@ const ParkFootprint: NextPage = () => {
             park_xAxisData={park_xAxisData}
             park_carbonEquivalent={park_carbonEquivalent}
             park_emissionLoad={park_emissionLoadData}
-            setTimeType={(timeType) => timeTypeChange(timeType)}
+            setTimeType={(timeType) => setTimeType(timeType)}
             timeType={timeType}
           ></LineChart>
         ) : (

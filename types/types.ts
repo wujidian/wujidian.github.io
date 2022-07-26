@@ -59,10 +59,7 @@ export type indexInfoApi = () => Promise<index_Info>;
 
 /**园区列表API的返回值*/
 export interface allPark_Info extends success_Response {
-  data:[
-    {id:number,
-    name:string,}
-  ]
+  data: [{ id: number; name: string }];
 }
 export type allparkApi = () => Promise<allPark_Info>;
 
@@ -78,10 +75,10 @@ export interface park_Info extends success_Response {
     region: string;
     type: string;
     reduce: string;
-    location:{
-      type:string,
-      coordinates: [number,number]
-    }
+    location: {
+      type: string;
+      coordinates: [number, number];
+    };
   };
 }
 export type parkInfoApi = (parkid: number) => Promise<park_Info>;
@@ -114,6 +111,9 @@ export type park_TableApi = (
 export interface park_Activity extends success_Response {
   data: {
     emissionLoad: string;
+    activityName: string;
+    reduce: number;
+    name: string;
   };
 }
 export type park_ActivityApi = (
@@ -199,10 +199,16 @@ export interface company_Info extends success_Response {
 export type companyInfoApi = (id: number) => Promise<company_Info>;
 
 /**企业碳足迹 二级路由 详情 —— eCharts折线图*/
-export interface company_eCharts extends park_Table {}
+export interface company_eCharts extends success_Response {
+  data: Array<{
+    emissionLoad: string;
+    carbonEquivalent: string;
+    start_time: string;
+  }>;
+}
 export type company_eChartsApi = (
   id: number,
-  type: number
+  type: number | string
 ) => Promise<company_eCharts>;
 
 /**企业碳足迹 二级路由 日基础活动*/
@@ -229,7 +235,7 @@ export interface company_Activity_eCharts extends park_Table {}
 export type companyDetails_eChartsApi = (
   id: number,
   activityId: string | number,
-  type: number
+  type: number |string
 ) => Promise<company_Activity_eCharts>;
 
 /** 企业活动碳足迹 三级路由 公司每日基础数据 */

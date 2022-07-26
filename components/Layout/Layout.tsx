@@ -15,16 +15,18 @@ const Layout = ({ children, router }: { children: any; router: any }) => {
     setIsModalVisible(false);
     Router.push("/login");
   };
-  const goIndex = ()=>{
+  const goIndex = () => {
     setIsModalVisible(false);
     Router.push("/");
-  }
+  };
   useEffect(() => {
-    console.log(state.parkId);
-    
+    console.log(router.pathname);
+    if (loginStatus != login_Status.login && router.pathname != "/login" && router.pathname != "/") {
+      setIsModalVisible(true);
+    }
     router.pathname == "/login" ? setheaderShow(false) : setheaderShow(true);
   }, [router.pathname]);
- 
+
   return (
     <div className={style.box}>
       {headerShow ? <Header /> : <></>}

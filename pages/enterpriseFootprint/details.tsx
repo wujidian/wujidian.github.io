@@ -4,7 +4,7 @@ import InfoCard, { InfoCardData } from "@components/InfoCard/InfoCard";
 import LineChart from "@components/LineChart/LineChart";
 import MiniCard, { MiniCardProps } from "@components/MiniCard/MiniCard";
 import TableModal from "@components/TableModal/TableModal";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import CheckDetailsBTN from "@components/CheckDetailsBTN/CheckDetailsBTN";
 import { ColumnsType } from "antd/lib/table";
 import { company_Activity_Detail, detailsTable } from "types/types";
@@ -13,6 +13,8 @@ import {
   GET_ENTERPRISE_CARBON_DAY_BASE_DETAIL_API,
   GET_ENTERPRISE_CARBON_ECHARTS_DATA_DETAIL_API,
 } from "@request/apis";
+import { MyContext } from "@components/MyContext/MyContext";
+import MySkeleton from "@components/MySkeleton";
 
 const data: detailsTable[] = [
   {
@@ -104,10 +106,12 @@ const columns: ColumnsType<detailsTable> = [
 ];
 
 const EnterpriseFootprintDetails: NextPage = () => {
+  const { state, dispatch } = useContext(MyContext) as any;
+  const { enterpriseFootprintInfoId, enterpriseFootprintDetailsId } = state;
   const [pageIndex, setPageIndex] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [modalShow, setmodalShow] = useState(false);
-  const [timeType, setTimeType] = useState("0");
+  const [timeType, setTimeType] = useState("1");
   const [avtiveInfo, setActiveInfo] = useState<company_Activity_Detail["data"]>(
     {
       id: 0,
@@ -117,7 +121,7 @@ const EnterpriseFootprintDetails: NextPage = () => {
       name: "暂无信息",
     }
   );
-  const [testMiniCardList, setTestMiniCardList] = useState<MiniCardProps[]>([]);
+  const [miniCardList, setMiniCardList] = useState<MiniCardProps[]>([]);
   const [park_xAxisData, setPark_xAxisData] = useState<number[] | string[]>([]);
   const [park_carbonEquivalent, setpark_carbonEquivalent] = useState<
     string[] | number[]
@@ -126,63 +130,84 @@ const EnterpriseFootprintDetails: NextPage = () => {
     string[] | number[]
   >([]);
   const [tableData, setTableData] = useState<detailsTable[]>([]);
+  const [enterpriseInfoLoding, setEnterpriseInfoLoding] = useState(true);
+  const [enterpriseEchartsLoding, setEnterpriseEchartsLoding] = useState(true);
+  const [enterpriseDayBaseLoding, setEnterpriseDayBaseLoding] = useState(true);
 
   const checkDetails = (id: number) => {
-    console.log(id);
     setmodalShow(true);
   };
 
-  const getParkInfo = async () => {
-    const getAllInfo = (
-      id: number = 1,
-      activityId: string = "2",
-      type: number = 0
-    ) => {
-      return Promise.all([
-        GET_ENTERPRISE_CARBON_DAY_BASE_DETAIL_API(id, activityId),
-        GET_CARBON_DAY_BASE_DETAIL_API(id, activityId),
-        GET_ENTERPRISE_CARBON_ECHARTS_DATA_DETAIL_API(id, activityId, type),
-      ]);
-    };
-    let alliInfo = await getAllInfo();
-    const [carbonInfo, statisticsInfo, tableInfo] = alliInfo;
-    // 处理卡片列表的数据
-    const statisticsInfoData = statisticsInfo.data.map((item) => {
-      return {
-        id: item.id,
-        title: item.name,
-        emissions: item.emissionLoad,
-        time: item.startTime,
-        iconImg: "/images/Group.png",
-        appendButto: CheckDetailsBTN({
-          btnClickFun: () => checkDetails(item.id),
-          btnText: "查看详情",
-        }),
-      };
-    });
-    // echarts 的折线图数据
-    let xAxisData: string[] = [];
-    let park_carbonEquivalent: string[] = [];
-    let park_emissionLoadData: string[] = [];
-    tableInfo.data.forEach((element) => {
-      xAxisData.push(element.startTime);
-      park_carbonEquivalent.push(element.carbonEquivalent);
-      park_emissionLoadData.push(element.emissionLoad);
-    });
-
-    setActiveInfo(carbonInfo.data);
-    setTestMiniCardList([...statisticsInfoData]);
-    setPark_xAxisData([...xAxisData]);
-    setpark_carbonEquivalent([...park_carbonEquivalent]);
-    setpark_emissionLoadData([...park_emissionLoadData]);
+  /**获取企业分类详情信息*/
+  const getEnterpriseClassificationDetails = async () => {
+    setEnterpriseInfoLoding(false);
+    try {
+      let res = await GET_ENTERPRISE_CARBON_DAY_BASE_DETAIL_API(
+        enterpriseFootprintInfoId,
+        enterpriseFootprintDetailsId
+      );
+      setActiveInfo(res.data);
+    } catch {}
+    setEnterpriseInfoLoding(true);
   };
-  const timeTypeChange = (time: string) => {
-    setTimeType(time);
+  /**获取企业分类详情信息Echarts数据*/
+  const getEnterpriseClassificatioEchartsData = async () => {
+    setEnterpriseEchartsLoding(false);
+    try {
+      let res = await GET_ENTERPRISE_CARBON_ECHARTS_DATA_DETAIL_API(
+        enterpriseFootprintInfoId,
+        enterpriseFootprintDetailsId,
+        timeType
+      );
+      // echarts 的折线图数据
+      let xAxisData: string[] = [];
+      let park_carbonEquivalent: string[] = [];
+      let park_emissionLoadData: string[] = [];
+      res.data.forEach((element) => {
+        xAxisData.push(element.startTime);
+        park_carbonEquivalent.push(element.carbonEquivalent);
+        park_emissionLoadData.push(element.emissionLoad);
+      });
+      setPark_xAxisData([...xAxisData]);
+      setpark_carbonEquivalent([...park_carbonEquivalent]);
+      setpark_emissionLoadData([...park_emissionLoadData]);
+    } catch {}
+    setEnterpriseEchartsLoding(true);
+  };
+  /**获取企业每日基础数据*/
+  const getEnterpriseDailyBaseData = async () => {
+    setEnterpriseDayBaseLoding(false);
+    try {
+      let res = await GET_CARBON_DAY_BASE_DETAIL_API(
+        enterpriseFootprintInfoId,
+        enterpriseFootprintDetailsId
+      );
+      const statisticsInfoData = res.data.map((item) => {
+        return {
+          id: item.id,
+          title: item.name,
+          emissions: item.emissionLoad,
+          time: item.startTime,
+          iconImg: "/images/Group.png",
+          appendButto: CheckDetailsBTN({
+            btnClickFun: () => checkDetails(item.id),
+            btnText: "查看详情",
+          }),
+        };
+      });
+      setMiniCardList(statisticsInfoData);
+    } catch {}
+    setEnterpriseDayBaseLoding(true);
   };
 
   useEffect(() => {
-    getParkInfo();
-  }, []);
+    getEnterpriseClassificationDetails();
+    getEnterpriseDailyBaseData();
+  }, [enterpriseFootprintInfoId, enterpriseFootprintDetailsId]);
+
+  useEffect(() => {
+    getEnterpriseClassificatioEchartsData();
+  }, [enterpriseFootprintInfoId, enterpriseFootprintDetailsId, timeType]);
 
   return (
     <div className="main ">
@@ -192,25 +217,33 @@ const EnterpriseFootprintDetails: NextPage = () => {
         </div>
       </div>
       <div className="mt24">
-        <InfoCard
-          name={avtiveInfo.activityName}
-          loc={avtiveInfo.name}
-          addOrSub={false}
-          total={avtiveInfo.reduce}
-          deviation={avtiveInfo.emissionLoad}
-        ></InfoCard>
+        {enterpriseInfoLoding ? (
+          <InfoCard
+            name={avtiveInfo.activityName}
+            loc={avtiveInfo.name}
+            addOrSub={false}
+            total={avtiveInfo.reduce}
+            deviation={avtiveInfo.emissionLoad}
+          ></InfoCard>
+        ) : (
+          <MySkeleton />
+        )}
       </div>
 
       <div className="lineChartBox">
-        <LineChart
-          park_name={"交通用能碳足迹"}
-          toDay_data={0}
-          park_xAxisData={park_xAxisData}
-          park_carbonEquivalent={park_carbonEquivalent}
-          park_emissionLoad={park_emissionLoadData}
-          setTimeType={(timeType) => timeTypeChange(timeType)}
-          timeType={timeType}
-        ></LineChart>
+        {enterpriseEchartsLoding ? (
+          <LineChart
+            park_name={"交通用能碳足迹"}
+            toDay_data={0}
+            park_xAxisData={park_xAxisData}
+            park_carbonEquivalent={park_carbonEquivalent}
+            park_emissionLoad={park_emissionLoadData}
+            setTimeType={(timeType) => setTimeType(timeType)}
+            timeType={timeType}
+          ></LineChart>
+        ) : (
+          <MySkeleton rows={8} />
+        )}
       </div>
       <div className="m24">
         <span className="pageTitle">每日基础数据 </span>
@@ -218,19 +251,23 @@ const EnterpriseFootprintDetails: NextPage = () => {
         <span className="blueTip">2016年碳排放标准规范标准</span>
       </div>
       <div>
-        {testMiniCardList.map((item, i) => {
-          return (
-            <MiniCard
-              appendButto={item.appendButto}
-              time={item.time}
-              title={item.title}
-              iconImg={item.iconImg}
-              emissions={item.emissions}
-              key={i.toString()}
-              id={""}
-            ></MiniCard>
-          );
-        })}
+        {enterpriseDayBaseLoding ? (
+          miniCardList.map((item, i) => {
+            return (
+              <MiniCard
+                appendButto={item.appendButto}
+                time={item.time}
+                title={item.title}
+                iconImg={item.iconImg}
+                emissions={item.emissions}
+                key={i.toString()}
+                id={""}
+              ></MiniCard>
+            );
+          })
+        ) : (
+          <MySkeleton />
+        )}
       </div>
       <TableModal
         show={modalShow}
