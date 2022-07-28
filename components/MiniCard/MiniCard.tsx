@@ -1,28 +1,37 @@
 import style from "./MiniCard.module.sass";
 
-
 /**
  * @param emissions 碳排放量
  * */
 
 export type MiniCardProps = {
-  id: string|number;
+  id: string | number;
   title: string;
   iconImg: string;
   time: string;
-  emissions: string;
-  linkFun?:()=>void;
-  appendButto?:JSX.Element |  any
+  emissions?: string;
+  type?: string;
+  linkFun?: () => void;
+  appendButto?: JSX.Element | any;
 };
 
 const MiniCard = (MiniCardProps: MiniCardProps) => {
-  const { title, iconImg, time, emissions,appendButto,linkFun } = MiniCardProps;
+  const { title, iconImg, time, emissions, appendButto, linkFun, type } =
+    MiniCardProps;
   return (
     <div className={style.miniCardBox} onClick={linkFun}>
       <div className={style.miniCardIconBox}>
         <img src={iconImg} alt="" />
         <span>{title}</span>
       </div>
+      {type && (
+        <div className={style.miniCardTimeBox}>
+          <span className={style.tipsTitle}>类型</span>
+          <span className={style.miniCardIconBox}>
+            <span >{type}</span>
+          </span>
+        </div>
+      )}
       <div className={style.miniCardTimeBox}>
         <span className={style.tipsTitle}>日期</span>
         <span className={style.miniCardIconBox}>
@@ -30,13 +39,15 @@ const MiniCard = (MiniCardProps: MiniCardProps) => {
           <span className={style.time}>{time}</span>
         </span>
       </div>
-      <div>
-        <span className={style.tipsTitle}>碳排放量</span>
+      {emissions && (
         <div>
-          <span className={style.emissions}>{emissions}</span>
-          <span className="goldenlabel">kgCO2e</span>
+          <span className={style.tipsTitle}>碳排放量</span>
+          <div>
+            <span className={style.emissions}>{emissions}</span>
+            <span className="goldenlabel">kgCO2e</span>
+          </div>
         </div>
-      </div>
+      )}
       {appendButto}
     </div>
   );

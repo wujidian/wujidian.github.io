@@ -1,11 +1,14 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function Mymap({
   longitude,
   latitude,
   title
 }) {
+  let [text, setText] = useState("321123");
   const mapRef = useRef(null);
+  const [mapDom, setMapDom] = useState(null);
+  const [mark, setMark] = useState(null);
   function setMap() {
     //初始化地图
     let center = new TMap.LatLng(latitude, longitude)
@@ -13,15 +16,13 @@ function Mymap({
     let map = new TMap.Map(document.getElementById('mapRef'), {
       disableDefaultUI: true,
       center: center,//设置地图中心点坐标
-      zoom: 17,   //设置地图缩放级别
+      zoom: 16,   //设置地图缩放级别
       baseMap: {  // 设置卫星地图
         type: 'satellite',
         features: ['base', 'building2d']
       },
     });
-
-
-    new TMap.MultiMarker({
+    let mark = new TMap.MultiMarker({
       map: map,
       enableDefaultStyle: false,
       styles: {
@@ -49,13 +50,32 @@ function Mymap({
         },
       ],
     });
-
+    setMapDom(map);
+    setMark(mark);
 
 
   }
   useEffect(() => {
     setMap();
-  }, [title]);
+  }, []);
+
+
+  useEffect(() => {
+    if (mark == null || mapDom == null) {
+      return
+    } else {
+      let center = new TMap.LatLng(latitude, longitude)
+      mapDom.setCenter(center);
+      mark.setGeometries([
+        {
+          position: center,
+          id: "1",   //点标记唯一标识，后续如果有删除、修改位置等操作，都需要此id
+          styleId: 'myStyle',  //指定样式id
+          content: title
+        }
+      ])
+    }
+  }, [longitude, latitude, title])
   return (
     <div
       id="mapRef"

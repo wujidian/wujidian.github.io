@@ -22,12 +22,6 @@ type ECOption = ComposeOption<
 
 const MapChart = ({ markList }: { markList: mark_List }) => {
   const chartRef: any = useRef(null);
-  const busLines = [
-    {
-      coords: [],
-      name: "xx",
-    },
-  ];
   let myChart: echarts.ECharts | null | void = null;
   const { dispatch } = useContext(MyContext) as any;
   let line: any = [];
@@ -66,7 +60,36 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
           areaColor: "rgba(216, 241, 220, 0.8)",
         },
       },
-      tooltip: {},
+      tooltip: {
+        trigger: "item",
+        show: true,
+        backgroundColor: "#E3EEEA",
+        showContent: true,
+        formatter: (params: any) => {
+          if (params.componentSubType !== "effectScatter") {
+            return "";
+          } else {
+            let tipDom = "";
+            tipDom = `<div >
+          <img src='/images/Vector-6.png'/>
+          <span style="font-size: 16px;color: #000;">${params.name}</span>
+          <br/>
+          <span>
+            <span style="font-size: 12px;color: #778399;">碳排放量</span>
+            <span style="font-size: 16px;color: #052835;">${
+              params.value[2] || 0.0
+            }</span>
+            <span style="background: #F6CD7D; border-radius: 37px;padding: 2px 6px; font-size: 12px;">kgCO2e</span>
+          </span>
+            <div id="seeMore"  style="pointer-events: auto"  onclick = "seeMore(${
+              params.data.id
+            })">查看更多</div>
+          </div>`;
+
+            return tipDom;
+          }
+        },
+      },
     },
 
     series: [
@@ -122,32 +145,10 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
     ],
 
     tooltip: {
-      trigger: "item",
       show: true,
-      backgroundColor: "#E3EEEA",
-      showContent: true,
-      // triggerOn:'none',
+      trigger: "item",
+      triggerOn: "click",
       alwaysShowContent: true,
-      formatter: function (params: any) {
-        if (params.componentSubType === "lines") {
-          return "";
-        } else {
-          let tipDom = "";
-          tipDom = `<div>
-          <img src='/images/Vector-6.png'/>
-          <span style="font-size: 16px;color: #000;">${params.name}</span>
-          <br/>
-          <span>
-            <span style="font-size: 12px;color: #778399;">碳排放量</span>
-            <span style="font-size: 16px;color: #052835;">${
-              params.value[2] || 0.00
-            }</span>
-            <span style="background: #F6CD7D; border-radius: 37px;padding: 2px 6px; font-size: 12px;">kgCO2e</span>
-          </span>
-          </div>`;
-          return tipDom;
-        }
-      },
     },
   };
 
@@ -156,20 +157,29 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
     let data: any = sicuanData;
     echarts.registerMap("sicuan", data);
     (myChart as any).setOption(options);
-    myChart.on("click", function (params: any) {
-      if (params.componentType === "series") {
-        router.push("/parkFootprint");
-        dispatch({
-          type: "UPDATE_PARK_ID",
-          payload: params.data.id,
-        });
-      }
-    });
+    // myChart.on("click", function (params: any) {
+    //   if (params.componentType === "series") {
+    //     router.push("/parkFootprint");
+    //     dispatch({
+    //       type: "UPDATE_PARK_ID",
+    //       payload: params.data.id,
+    //     });
+    //   }
+    // });
     myChart.dispatchAction({
       type: "showTip",
       seriesIndex: 0, //第几条series
       dataIndex: 0, //显示第几个tooltip
+      position: "right",
     });
+
+    (window as any).seeMore = (id: any) => {
+      dispatch({
+        type: "UPDATE_PARK_ID",
+        payload: id,
+      });
+      router.push("/parkFootprint");
+    };
   }
 
   function again() {

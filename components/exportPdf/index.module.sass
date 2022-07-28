@@ -13,7 +13,7 @@
             font-size: 14px
             line-height: 25px
             border: 1px solid #000
-    .details
+    .detailsTitle
         display: flex
         span
             width: 50%
@@ -21,7 +21,32 @@
             line-height: 25px
             border: 1px solid #000
             flex: 2
-        
+
         .name
             flex: 3
-        
+    .details
+        display: flex
+        flex-direction: column
+        .detailsItemBox
+            display: flex
+            justify-content: space-between
+            text-align: center
+            align-items: stretch
+        .activityName
+            flex: 2
+            display: block
+            line-height: 8
+            border-left: 1px solid #000
+            border-right: 1px solid #000
+            border-bottom: 1px solid #000
+        .detailsItem
+            flex: 2
+            display: flex
+            flex-direction: column
+            border-right: 1px solid #000
+            border-bottom: 1px solid #000
+            span:not(:last-child)
+                border-bottom: 1px solid #000
+
+        .detailsItemName
+            flex: 3

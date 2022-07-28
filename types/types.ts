@@ -83,14 +83,15 @@ export interface park_Info extends success_Response {
 }
 export type parkInfoApi = (parkid: number) => Promise<park_Info>;
 /**园区碳足迹统计类别的消息*/
+interface park_StatisticsItem {
+  id: number;
+  name: string;
+  emissionLoad: string;
+  carbonEquivalent: string;
+  startTime: string;
+}
 export interface park_Statistics extends success_Response {
-  data: Array<{
-    id: number;
-    name: string;
-    emissionLoad: string;
-    carbonEquivalent: string;
-    startTime: string;
-  }>;
+  data: Array<park_StatisticsItem>;
 }
 export type park_StatisticsApi = (parkid: number) => Promise<park_Statistics>;
 
@@ -106,6 +107,48 @@ export type park_TableApi = (
   parkid: number,
   timeType: string | number
 ) => Promise<park_Table>;
+
+/**园区碳足迹报告列表返回结构*/
+export interface parkReportList extends success_Response {
+  data: Array<{
+    id: 1;
+    name: string;
+    activity_name: string;
+    create_time: string;
+  }>;
+}
+export type getparkReportListApi = (parkid: number) => Promise<parkReportList>;
+
+/**创建园区碳足迹报告详细信息返回结构*/
+export interface createParkReport extends success_Response {
+  data: {
+    name: string;
+    type: string;
+    address: string;
+    create_time: string;
+    cid: string;
+    emissionInfo: Array<park_StatisticsItem>;
+    details: Array<{
+      activityName: string;
+      list: Array<{
+        activity_name: string;
+        energy_name: string;
+        emission: string;
+        emission_factors: string;
+        emission_load: string;
+      }>;
+    }>;
+  };
+}
+
+export type createParkReportApi = (
+  parkid: number,
+  data: {
+    activityId: string;
+    startTime: string;
+    endTime: string;
+  }
+) => Promise<createParkReport>;
 
 /**园区碳足迹 ———— 二级页面 ———— 默认页面返回数据类型*/
 export interface park_Activity extends success_Response {
@@ -235,7 +278,7 @@ export interface company_Activity_eCharts extends park_Table {}
 export type companyDetails_eChartsApi = (
   id: number,
   activityId: string | number,
-  type: number |string
+  type: number | string
 ) => Promise<company_Activity_eCharts>;
 
 /** 企业活动碳足迹 三级路由 公司每日基础数据 */

@@ -19,6 +19,9 @@ import {
   companyDetails_eChartsApi,
   companyDetails_DayDataApi,
   allparkApi,
+  getparkReportListApi,
+  createParkReportApi,
+  createParkReport,
 } from "../types/types";
 
 /-------------------------------登录页所需API-------------------------------------------/;
@@ -44,15 +47,12 @@ export const GET_INDEX_INFO_API: indexInfoApi = function () {
   return request(GET_INDEX_INFO, {}, { method: "get", hint: false });
 };
 
-
 /**园区列表*/
-export const GET_PARK_LIST = "api/zones/all"; 
+export const GET_PARK_LIST = "api/zones/all";
 /**获取园区列表的接口*/
-export const GET_ALL_PARK_LIST_API:allparkApi = function () {
+export const GET_ALL_PARK_LIST_API: allparkApi = function () {
   return request(GET_PARK_LIST, {}, { method: "get", hint: false });
 };
- 
-
 
 /---------------------------------园区碳足迹——第一级路由所需API------------------------------/;
 /**园区碳足迹——第一级路由——园区信息——接口地址*/
@@ -98,6 +98,48 @@ export const GET_PARK_STATISTICS_API: park_StatisticsApi = function (
     `${GET_PARK_STATISTICS}/${parkid}`,
     {},
     { method: "get", hint: false }
+  );
+};
+
+/**园区碳足迹——第一级路由——报告的列表——接口地址*/
+export const GET_PARK_REPORT_LIST = "api/zones/carbonRecord";
+/**获取园区碳足迹报告列表*/
+export const GET_PARK_REPORT_LIST_API: getparkReportListApi = function (
+  parkid: number
+) {
+  return request(
+    `${GET_PARK_REPORT_LIST}/${parkid}`,
+    {},
+    { method: "get", hint: false }
+  );
+};
+
+/**园区碳足迹——第一级路由——创建pdf——接口地址*/
+export const CREATE_PARK_REPORT = "api/zones/createCarbonRecord";
+/**创建园区碳足迹报告pdf*/
+export const CREATE_PARK_REPORT_API: createParkReportApi = function (
+  parkid: number,
+  data
+) {
+  return request(`${CREATE_PARK_REPORT}/${parkid}`, data, {
+    method: "post",
+    hint: false,
+  });
+};
+
+/**园区碳足迹——第一级路由———查看已经生成的报告———接口地址*/
+export const VIEW_RECORDS_PDF = "api/zones/carbonRecordInfo";
+/**查看已经生成的报告*/
+export const VIEW_RECORDS_PDF_API: (
+  activityId: number | string
+) => Promise<createParkReport> = function (activityId: number | string) {
+  return request(
+    `${VIEW_RECORDS_PDF}/${activityId}`,
+    {},
+    {
+      method: "get",
+      hint: false,
+    }
   );
 };
 
@@ -193,6 +235,7 @@ export const GET_ENTERPRISE_CARBON_LIST_API: company_List_Api = function (
   );
 };
 
+/—————————————————————————————————————企业碳足迹 二级路由 所需API———————————————————————————————————————————/;
 /**企业碳足迹 二级路由 详情*/
 export const GET_ENTERPRISE_CARBON_INFO = "api/company/info";
 /**获取企业碳足迹 二级路由 详情*/
@@ -228,7 +271,49 @@ export const GET_ENTERPRISE_CARBON_DAY_BASE_API: company_ActivityApi =
       { method: "get", hint: false }
     );
   };
+/**企业碳足迹 二级路由——报告的列表——接口地址*/
+export const GET_ENTERPRISE_REPORT_LIST = "api/company/carbonRecord";
+/**获取园区碳足迹报告列表*/
+export const GET_ENTERPRISEK_REPORT_LIST_API: getparkReportListApi = function (
+  parkid: number
+) {
+  return request(
+    `${GET_ENTERPRISE_REPORT_LIST}/${parkid}`,
+    {},
+    { method: "get", hint: false }
+  );
+};
 
+/**企业碳足迹 二级路由——创建pdf——接口地址*/
+export const CREATE_ENTERPRISE_REPORT = "api/company/createCarbonRecord";
+/**创建园区碳足迹报告pdf*/
+export const CREATE_ENTERPRISE_REPORT_API: createParkReportApi = function (
+  parkid: number,
+  data
+) {
+  return request(`${CREATE_ENTERPRISE_REPORT}/${parkid}`, data, {
+    method: "post",
+    hint: false,
+  });
+};
+
+/**企业碳足迹 二级路由———查看已经生成的报告———接口地址*/
+export const VIEW_ENTERPRISE_RECORDS_PDF = "api/company/carbonRecordInfo";
+/**查看已经生成的报告*/
+export const VIEW_ENTERPRISE_RECORDS_PDF_API: (
+  activityId: number | string
+) => Promise<createParkReport> = function (activityId: number | string) {
+  return request(
+    `${VIEW_ENTERPRISE_RECORDS_PDF}/${activityId}`,
+    {},
+    {
+      method: "get",
+      hint: false,
+    }
+  );
+};
+
+/————————————————————————————————企业碳足迹 三级路由 所需API——————————————————————————————————/;
 /** 企业活动碳足迹 三级路由 —— 详细信息 */
 export const GET_ENTERPRISE_CARBON_DAY_BASE_DETAIL =
   "api/company/carbonActivitys/info";

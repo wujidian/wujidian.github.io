@@ -8,18 +8,30 @@ import ExportPdf from "@components/exportPdf";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import {
+  CREATE_PARK_REPORT_API,
   GET_PARK_CARBON_INFO_API,
   GET_PARK_STATISTICS_API,
   GET_PARK_TABLE_INFO_API,
+  GET_PARK_REPORT_LIST_API,
+  VIEW_RECORDS_PDF_API,
 } from "@request/apis";
 import { useContext, useEffect, useState } from "react";
-import { park_Info } from "types/types";
+import { createParkReport, parkReportList, park_Info } from "types/types";
 import { MyContext } from "@components/MyContext/MyContext";
+import { Button, Checkbox, DatePicker, message, Modal } from "antd";
+import { CheckboxValueType } from "antd/lib/checkbox/Group";
+import CheckDetailsBTN from "@components/CheckDetailsBTN/CheckDetailsBTN";
 
 const ParkFootprint: NextPage = () => {
   const router = useRouter();
+  const { RangePicker } = DatePicker;
   const { state, dispatch } = useContext(MyContext) as any;
   const { parkId } = state;
+  const [checkBoxShow, setcheckBoxShow] = useState(false);
+  const [pdfShow, setPdfShow] = useState(false);
+  const [startTime, setStartTime] = useState<any>("");
+  const [endTime, setEndTime] = useState<any>("");
+  const [activeList, setActiveList] = useState<CheckboxValueType[]>([]);
   const [parkInfoShow, setParkInfoShow] = useState(true);
   const [parkEchartsShow, setParkEchartsShow] = useState(true);
   const [activeParkInfoShow, setActiveParkInfoShow] = useState(true);
@@ -48,6 +60,9 @@ const ParkFootprint: NextPage = () => {
       emissions: "0.00",
     },
   ]);
+  const [PDFExportRecords, setPDFExportRecords] = useState<
+    parkReportList["data"]
+  >([]);
   const [park_xAxisData, setPark_xAxisData] = useState<number[] | string[]>([]);
   const [park_carbonEquivalent, setpark_carbonEquivalent] = useState<
     string[] | number[]
@@ -62,6 +77,40 @@ const ParkFootprint: NextPage = () => {
     latitude: 30.572961,
     longitude: 104.066301,
   });
+  const [pdfParkInfo, setPdfParkInfo] = useState<createParkReport["data"] | {}>(
+    {}
+  );
+  /**查看已经生成的报表*/
+  const viewRecordsPDF = async (activeId: number | string) => {
+    try {
+      let res = await VIEW_RECORDS_PDF_API(activeId);
+      console.log(res);
+      setPdfParkInfo(res.data);
+      setPdfShow(true);
+    } catch {
+      message.error("查看记录失败,请稍后重试");
+    }
+  };
+
+  /**创建PDF报表*/
+  const createReport = async () => {
+    if (activeList.length === 0) {
+      message.error("请选择报表类型");
+      return;
+    }
+    if (!startTime || !endTime) {
+      message.error("请选择日期");
+      return;
+    }
+    setcheckBoxShow(false);
+    let res = await CREATE_PARK_REPORT_API(parkId, {
+      startTime,
+      endTime,
+      activityId: activeList.join(","),
+    });
+    setPdfParkInfo(res.data);
+    setPdfShow(true);
+  };
 
   const toParkFootprintInfo = (id: string | number) => {
     dispatch({
@@ -121,6 +170,13 @@ const ParkFootprint: NextPage = () => {
     } catch {}
     setActiveParkInfoShow(true);
   };
+  /**获取园区碳核算报告*/
+  const getPDFExportRecords = async (parkId: number) => {
+    try {
+      let res = await GET_PARK_REPORT_LIST_API(parkId);
+      setPDFExportRecords([...res.data]);
+    } catch {}
+  };
 
   useEffect(() => {
     if (parkId) {
@@ -132,6 +188,10 @@ const ParkFootprint: NextPage = () => {
   useEffect(() => {
     getparkEcharts(parkId, timeType);
   }, [parkId, timeType]);
+
+  useEffect(() => {
+    getPDFExportRecords(parkId);
+  }, [parkId, pdfShow]);
 
   return (
     <div className="parkFootprint">
@@ -183,11 +243,7 @@ const ParkFootprint: NextPage = () => {
           title={parkInfo.name}
         ></Mymap>
       ) : (
-        <Mymap
-          longitude="104.066301"
-          latitude="30.572961"
-          title="暂无信息"
-        ></Mymap>
+        <MySkeleton rows={8}></MySkeleton>
       )}
       <div>
         {activeParkInfoShow ? (
@@ -210,16 +266,81 @@ const ParkFootprint: NextPage = () => {
           <MySkeleton rows={8} />
         )}
       </div>
-      <ExportPdf
-        typeOptions={miniCardList.map((item, i) => {
-          return {
-            label: item.title,
-            value: item.id,
-          };
+
+      <div className="m24 flex jcsbcentennt">
+        <div>
+          <span className="pageTitle">园区碳核算报告 </span>
+          <span className="mr5"> 生成依据 </span>
+          <span className="blueTip">ISO-14064碳核算标准</span>
+        </div>
+        <button className="viewRecords" onClick={() => setcheckBoxShow(true)}>查看报告</button>
+      </div>
+
+      <div>
+        {PDFExportRecords.map((item, i) => {
+          return (
+            <MiniCard
+              id={item.id}
+              time={item.create_time}
+              title={item.name}
+              iconImg="/images/Group.png"
+              type={item.activity_name}
+              key={i.toString()}
+              appendButto={
+                <CheckDetailsBTN
+                  btnText="查看详情"
+                  btnClickFun={() => {
+                    viewRecordsPDF(item.id);
+                  }}
+                />
+              }
+            ></MiniCard>
+          );
         })}
-        title={"园区碳核算报告"}
-        generationBasis={"ISO-14064碳核算标准"}
-      ></ExportPdf>
+      </div>
+
+      <Modal
+        title="选择报告"
+        visible={checkBoxShow}
+        onOk={() => {
+          createReport();
+        }}
+        onCancel={() => setcheckBoxShow(false)}
+        cancelText="取消"
+        okText="确定"
+      >
+        <div style={{ margin: "0 0 40px 0" }}>
+          <Checkbox.Group
+            options={miniCardList.map((item, i) => {
+              return {
+                label: item.title,
+                value: item.id,
+              };
+            })}
+            defaultValue={activeList}
+            onChange={(e) => {
+              setActiveList(e);
+            }}
+          />
+        </div>
+        <RangePicker
+          format="YYYY/MM/DD"
+          onChange={(e) => {
+            if (e) {
+              setStartTime((e as any)[0].format("YYYY-MM-DD"));
+              setEndTime((e as any)[1].format("YYYY-MM-DD"));
+            } else {
+              setStartTime("");
+              setEndTime("");
+            }
+          }}
+        />
+      </Modal>
+      <ExportPdf
+        pdfShow={pdfShow}
+        onCancel={() => setPdfShow(false)}
+        pdfParkInfo={pdfParkInfo as createParkReport["data"]}
+      />
     </div>
   );
 };

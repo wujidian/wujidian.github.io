@@ -245,11 +245,7 @@ const EnterpriseFootprintDetails: NextPage = () => {
           <MySkeleton rows={8} />
         )}
       </div>
-      <div className="m24">
-        <span className="pageTitle">每日基础数据 </span>
-        <span className="mr5"> 生成依据 </span>
-        <span className="blueTip">2016年碳排放标准规范标准</span>
-      </div>
+      
       <div>
         {enterpriseDayBaseLoding ? (
           miniCardList.map((item, i) => {
