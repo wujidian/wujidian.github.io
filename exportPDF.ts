@@ -66,7 +66,7 @@ const exportXLSX = ( name: string, domName: string) => {
       }
     }
 
-    pdf.save("你的名字.pdf");
+    pdf.save("碳核算报告.pdf");
   });
 };
 
