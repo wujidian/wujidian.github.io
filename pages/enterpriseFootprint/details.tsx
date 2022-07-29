@@ -191,7 +191,7 @@ const EnterpriseFootprintDetails: NextPage = () => {
           iconImg: "/images/Group.png",
           appendButto: CheckDetailsBTN({
             btnClickFun: () => checkDetails(item.id),
-            btnText: "查看详情",
+            btnText: "查看报告",
           }),
         };
       });

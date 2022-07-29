@@ -260,7 +260,7 @@ const EnterpriseFootprintInfo: NextPage = () => {
             setcheckBoxShow(true);
           }}
         >
-          查看报告
+          生成报告
         </button>
       </div>
       <div>
@@ -275,7 +275,7 @@ const EnterpriseFootprintInfo: NextPage = () => {
               key={i.toString()}
               appendButto={
                 <CheckDetailsBTN
-                  btnText="查看详情"
+                  btnText="查看报告"
                   btnClickFun={() => {
                     viewRecordsPDF(item.id);
                   }}

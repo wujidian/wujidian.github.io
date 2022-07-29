@@ -71,7 +71,7 @@ const Index: NextPage = ({ children }: any) => {
         <div>
           {markList.map((item, index) => {
             return (
-              <div key={index} className="m24 ml24">
+              <div key={index} className="m10 ml24">
                 <LineBarChart
                   park_name={item.name}
                   park_color={""}

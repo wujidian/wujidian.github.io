@@ -63,29 +63,54 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
       tooltip: {
         trigger: "item",
         show: true,
-        backgroundColor: "#E3EEEA",
+        backgroundColor: "rgba(0,0,0,0)",
+        borderColor: "rgba(0,0,0,0)",
+        padding: [0, 1, 1, 1],
         showContent: true,
         formatter: (params: any) => {
+          console.log(params);
+
           if (params.componentSubType !== "effectScatter") {
             return "";
           } else {
-            let tipDom = "";
-            tipDom = `<div >
-          <img src='/images/Vector-6.png'/>
-          <span style="font-size: 16px;color: #000;">${params.name}</span>
-          <br/>
-          <span>
-            <span style="font-size: 12px;color: #778399;">碳排放量</span>
-            <span style="font-size: 16px;color: #052835;">${
-              params.value[2] || 0.0
-            }</span>
-            <span style="background: #F6CD7D; border-radius: 37px;padding: 2px 6px; font-size: 12px;">kgCO2e</span>
-          </span>
-            <div id="seeMore"  style="pointer-events: auto"  onclick = "seeMore(${
-              params.data.id
-            })">查看更多</div>
-          </div>`;
+            const sameMarkList = markList.filter((item) => {
+              return (
+                item.id != params.data.id &&
+                item.value[0] == params.data.value[0] &&
+                item.value[1] == params.data.value[1]
+              );
+            });
+            // console.log(sameMarkList);
+            let tooltips = [];
+            tooltips.push(params.data);
+            sameMarkList.length > 0 && tooltips.push(...sameMarkList);
 
+            console.log(tooltips);
+
+            let tipDom = "";
+            tipDom = `
+              <div>
+                ${tooltips.map((item) => {
+                  return `<div style="background: #E3EEEA; border-radius: 5px; padding:  6px;">
+                    <img src='/images/Vector-6.png'/>
+                    <span style="font-size: 16px;color: #000;">${
+                      item.name
+                    }</span>
+                    <br/>
+                    <span>
+                        <span style="font-size: 12px;color: #778399;">碳排放量</span>
+                        <span style="font-size: 16px;color: #052835;">${
+                          item.value[2] || 0.0
+                        }</span>
+                    <span style="background: #F6CD7D; border-radius: 37px;padding: 2px 6px; font-size: 12px;">kgCO2e</span>
+                    </span>
+                    <div id="seeMore"  style="pointer-events: auto"  onclick = "seeMore(${
+                      item.id
+                    })">查看更多</div>
+                  </div>`;
+                })}
+              </div>
+          `;
             return tipDom;
           }
         },
@@ -102,6 +127,7 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
         },
         symbol: "image:///images/mark.png",
         symbolSize: [30, 52],
+        symbolOffset: [0, "-50%"],
         data: markList,
       },
       {
@@ -113,7 +139,7 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
         },
         symbol: "image:///images/halo.png",
         symbolSize: [70, 70],
-        symbolOffset: [0, 20],
+        symbolOffset: [0, "-10%"],
         data: markList,
       },
       {
@@ -157,20 +183,11 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
     let data: any = sicuanData;
     echarts.registerMap("sicuan", data);
     (myChart as any).setOption(options);
-    // myChart.on("click", function (params: any) {
-    //   if (params.componentType === "series") {
-    //     router.push("/parkFootprint");
-    //     dispatch({
-    //       type: "UPDATE_PARK_ID",
-    //       payload: params.data.id,
-    //     });
-    //   }
-    // });
     myChart.dispatchAction({
       type: "showTip",
       seriesIndex: 0, //第几条series
       dataIndex: 0, //显示第几个tooltip
-      position: "right",
+      position: (point: any, params: any) => {},
     });
 
     (window as any).seeMore = (id: any) => {

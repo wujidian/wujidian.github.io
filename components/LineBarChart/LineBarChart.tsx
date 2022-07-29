@@ -67,6 +67,7 @@ const LineBarChart: NextPage<LineBarChartPorps> = (
         data: park_seriesData,
         type: "line",
         smooth: true,
+        connectNulls: true,
         markPoint: {
           data: [
             {

@@ -273,7 +273,7 @@ const ParkFootprint: NextPage = () => {
           <span className="mr5"> 生成依据 </span>
           <span className="blueTip">ISO-14064碳核算标准</span>
         </div>
-        <button className="viewRecords" onClick={() => setcheckBoxShow(true)}>查看报告</button>
+        <button className="viewRecords" onClick={() => setcheckBoxShow(true)}>生成报告</button>
       </div>
 
       <div>
@@ -288,7 +288,7 @@ const ParkFootprint: NextPage = () => {
               key={i.toString()}
               appendButto={
                 <CheckDetailsBTN
-                  btnText="查看详情"
+                  btnText="查看报告"
                   btnClickFun={() => {
                     viewRecordsPDF(item.id);
                   }}
