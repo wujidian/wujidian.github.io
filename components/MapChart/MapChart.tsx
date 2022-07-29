@@ -68,8 +68,6 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
         padding: [0, 1, 1, 1],
         showContent: true,
         formatter: (params: any) => {
-          console.log(params);
-
           if (params.componentSubType !== "effectScatter") {
             return "";
           } else {
@@ -102,9 +100,12 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
                         <span style="font-size: 16px;color: #052835;">${
                           item.value[2] || 0.0
                         }</span>
-                    <span style="background: #F6CD7D; border-radius: 37px;padding: 2px 6px; font-size: 12px;">kgCO2e</span>
+                    <span style=" background: #F6CD7D; border-radius: 37px;padding: 2px 6px; font-size: 12px;">kgCO2e</span>
                     </span>
-                    <div id="seeMore"  style="pointer-events: auto"  onclick = "seeMore(${
+                    <div id="seeMore"  style="margin-top:5px; pointer-events: auto; background: #32b597;
+                    color: #fff;
+                    padding: 5px 0;
+                    border-radius: 5px;"  onclick = "seeMore(${
                       item.id
                     })">查看更多</div>
                   </div>`;
@@ -123,11 +124,11 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
         coordinateSystem: "geo",
         rippleEffect: {
           //涟漪特效
-          number: 0, //涟漪的最大值
+          number: 1, //涟漪的最大值
         },
-        symbol: "image:///images/mark.png",
-        symbolSize: [30, 52],
-        symbolOffset: [0, "-50%"],
+        symbol: "image:///images/halo.png",
+        symbolSize: [70, 70],
+        symbolOffset: [0, "-10%"],
         data: markList,
       },
       {
@@ -135,11 +136,11 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
         coordinateSystem: "geo",
         rippleEffect: {
           //涟漪特效
-          number: 1, //涟漪的最大值
+          number: 0, //涟漪的最大值
         },
-        symbol: "image:///images/halo.png",
-        symbolSize: [70, 70],
-        symbolOffset: [0, "-10%"],
+        symbol: "image:///images/mark.png",
+        symbolSize: [30, 52],
+        symbolOffset: [0, "-50%"],
         data: markList,
       },
       {

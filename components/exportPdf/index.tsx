@@ -96,6 +96,8 @@ const ExportPdf = ({
         <div id="pdfDOM">
           {pdfParkInfo.name && (
             <div className={styles.pdfBox}>
+              <div className={styles.title}>CID</div>
+              <div className={styles.cid}>{pdfParkInfo.cid}</div>
               <div className={styles.title}>基本信息</div>
               <div className={styles.infoBox}>
                 <span>园区/企业名称 </span>
