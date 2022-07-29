@@ -86,13 +86,13 @@ const LineChart: NextPage<LineChartPorps> = (porps: LineChartPorps) => {
         smooth: true,
         areaStyle: {},
       },
-      {
-        name: "基准排放量",
-        data: park_emissionLoad,
-        type: "line",
-        smooth: true,
-        areaStyle: {},
-      },
+      // {
+      //   name: "基准排放量",
+      //   data: park_emissionLoad,
+      //   type: "line",
+      //   smooth: true,
+      //   areaStyle: {},
+      // },
     ],
   };
   function renderChart() {

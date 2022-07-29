@@ -103,7 +103,7 @@ const EnterpriseFootprint: NextPage = () => {
             });
             Router.push("/enterpriseFootprint/info");
           },
-          btnText: "查看报告",
+          btnText: "查看详情",
         }),
     },
   ];

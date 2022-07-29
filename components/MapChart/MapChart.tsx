@@ -102,12 +102,14 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
                         }</span>
                     <span style=" background: #F6CD7D; border-radius: 37px;padding: 2px 6px; font-size: 12px;">kgCO2e</span>
                     </span>
-                    <div id="seeMore"  style="margin-top:5px; pointer-events: auto; background: #32b597;
-                    color: #fff;
-                    padding: 5px 0;
-                    border-radius: 5px;"  onclick = "seeMore(${
+                    <div id="seeMore"  style="margin-top:5px; 
+                    pointer-events: auto; 
+                    color: #005eaf;
+                    text-align: right;
+                    font-size: 12px;
+                   "  onclick = "seeMore(${
                       item.id
-                    })">查看更多</div>
+                    })">查看更多></div>
                   </div>`;
                 })}
               </div>

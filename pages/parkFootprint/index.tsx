@@ -224,7 +224,7 @@ const ParkFootprint: NextPage = () => {
       <div className="lineChartBox">
         {parkEchartsShow ? (
           <LineChart
-            park_name={parkInfo.name}
+            park_name='园区碳足迹'
             toDay_data={0}
             park_xAxisData={park_xAxisData}
             park_carbonEquivalent={park_carbonEquivalent}

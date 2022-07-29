@@ -17,8 +17,8 @@ const TotalCount = (TotalCountData: TotalCountData) => {
       </div>
       <div className={style.line}></div>
       <div>
-        <span className={style.addOrsub}>比去年{addOrsub?'增加':'减少'}</span>
-        <span className={style.deviation}>{deviation}</span>
+        <span className={style.addOrsub}>比去年{Number(deviation)>=0?'增加':'减少'}</span>
+        <span className={Number(deviation)>=0?style.add:style.sub}>{deviation}%</span>
       </div>
     </div>
   );
