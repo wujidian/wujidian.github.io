@@ -111,7 +111,7 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
           //涟漪特效
           number: 1, //涟漪的最大值
         },
-        symbol: "image:///images/markBc.png",
+        symbol: "image:///images/halo.png",
         symbolSize: [70, 70],
         symbolOffset: [0, 20],
         data: markList,
