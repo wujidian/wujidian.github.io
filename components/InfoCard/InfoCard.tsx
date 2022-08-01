@@ -9,9 +9,10 @@ export type InfoCardData = {
   addOrSub: add | sub;
   total: string | number;
   deviation: string | number;
+  totalTitle: string;
 };
 const InfoCard = (InfoCardData: InfoCardData) => {
-  const { name, loc, addOrSub, total, deviation } = InfoCardData;
+  const { name, loc, addOrSub, total, deviation,totalTitle } = InfoCardData;
   return (
     <div className={styles.InfoCardBox}>
       <div className={styles.left}>
@@ -26,7 +27,7 @@ const InfoCard = (InfoCardData: InfoCardData) => {
         </div>
       </div>
       <div className={styles.right}>
-        <span className="TotalCountTitle">园区本年度碳排放总量</span>
+        <span className="TotalCountTitle">{totalTitle}</span>
         <div>
           <span className="TotalCountNum">{total}</span>
           <span className="goldenlabel">kgCO2e</span>

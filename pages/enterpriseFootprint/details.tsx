@@ -219,6 +219,7 @@ const EnterpriseFootprintDetails: NextPage = () => {
       <div className="mt24">
         {enterpriseInfoLoding ? (
           <InfoCard
+            totalTitle="本年度碳排放总量"
             name={avtiveInfo.activityName}
             loc={avtiveInfo.name}
             addOrSub={false}
@@ -233,7 +234,7 @@ const EnterpriseFootprintDetails: NextPage = () => {
       <div className="lineChartBox">
         {enterpriseEchartsLoding ? (
           <LineChart
-            park_name={"交通用能碳足迹"}
+            park_name={`${avtiveInfo.activityName}碳足迹`}
             toDay_data={0}
             park_xAxisData={park_xAxisData}
             park_carbonEquivalent={park_carbonEquivalent}
@@ -245,7 +246,7 @@ const EnterpriseFootprintDetails: NextPage = () => {
           <MySkeleton rows={8} />
         )}
       </div>
-      
+
       <div>
         {enterpriseDayBaseLoding ? (
           miniCardList.map((item, i) => {

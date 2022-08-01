@@ -2,15 +2,16 @@ import style from "./TotalCount.module.sass";
 type add = true;
 type sub = false;
 export interface TotalCountData {
+  title: string;
   total: number | string;
   addOrsub?: add | sub;
   deviation: string;
 }
 const TotalCount = (TotalCountData: TotalCountData) => {
-  const { total, addOrsub, deviation } = TotalCountData;
+  const { total, addOrsub, deviation,title } = TotalCountData;
   return (
     <div className={style.TotalCountBox}>
-      <span className="TotalCountTitle">园区本年度碳排放总量</span>
+      <span className="TotalCountTitle">{title}</span>
       <div>
         <span className="TotalCountNum">{total}</span>
         <span className="goldenlabel">kgCO2e</span>

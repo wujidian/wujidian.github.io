@@ -168,6 +168,7 @@ const EnterpriseFootprint: NextPage = () => {
         <div className="TotalCount-box">
           {parkInfoLoading ? (
             <TotalCount
+              title="园区本年度碳排放总量"
               total={parkInfo.emissionLoad}
               addOrsub={false}
               deviation={parkInfo.reduce}
@@ -178,6 +179,16 @@ const EnterpriseFootprint: NextPage = () => {
         </div>
       </div>
 
+      <div className="m24 flex jcsbcentennt">
+        <div>
+          <span className="pageTitle">企业碳排放概览 </span>
+          <span className="mr5"> 生成依据 </span>
+          <span className="blueTip">2006年工程建设标准规范标准</span>
+        </div>
+       
+      </div>
+
+          
       <div className="infoTable-box">
         {tableLoading ? (
           <InfoTable columns={columns} data={tableData}></InfoTable>

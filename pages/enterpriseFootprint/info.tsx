@@ -165,7 +165,7 @@ const EnterpriseFootprintInfo: NextPage = () => {
       let res = await GET_ENTERPRISEK_REPORT_LIST_API(
         enterpriseFootprintInfoId
       );
-      let PDFExportRecords = res.data.reverse()
+      let PDFExportRecords = res.data.reverse();
       setPDFExportRecords([...PDFExportRecords]);
     } catch {}
   };
@@ -204,6 +204,7 @@ const EnterpriseFootprintInfo: NextPage = () => {
         <div className="TotalCount-box">
           {enterpriseInfoLoding ? (
             <TotalCount
+              title="企业本年度碳排放总量"
               total={companyDetails.emissionLoad}
               addOrsub={false}
               deviation={companyDetails.reduce}
@@ -217,7 +218,7 @@ const EnterpriseFootprintInfo: NextPage = () => {
       <div className="lineChartBox">
         {enterpriseEchartsLoding ? (
           <LineChart
-            park_name={""}
+            park_name={'企业碳足迹'}
             toDay_data={0}
             park_xAxisData={park_xAxisData}
             park_carbonEquivalent={park_carbonEquivalent}

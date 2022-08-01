@@ -26,7 +26,7 @@ const MiniCard = (MiniCardProps: MiniCardProps) => {
       </div>
       {type != undefined && (
         <div className={style.miniCardTimeBox}>
-          <span className={style.tipsTitle}>类型</span>
+          <span className={style.tipsTitle}>活动类型</span>
           <span className={style.miniCardIconBox}>
             <span>{type || '暂无信息'}</span>
           </span>

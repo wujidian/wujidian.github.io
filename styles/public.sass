@@ -50,11 +50,19 @@ body
     overflow: hidden
     margin: 20px 0
 .viewRecords
-    background: #06CDA2
     border-radius: 8px
-    color: #fff
+    color: #10B482
     border: none
-    padding: 6px 12px
+    padding: 6px 12px 6px 35px
+    background: url(/images/triangle-active.png) no-repeat center #F1FCF8
+    background-position: 15% 50%
+    transition: all 0.5s ease-in-out
+.viewRecords:hover
+
+    background: url(/images/triangle.png) no-repeat center #F6CD7D
+    background-position: 15% 50%
+    color: #231815
+    cursor: pointer
 .active-tooltip:hover
     background-color: #fff !important
     opacity: 1 !important

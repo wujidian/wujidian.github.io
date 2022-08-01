@@ -213,6 +213,7 @@ const ParkFootprint: NextPage = () => {
         <div className="TotalCount-box">
           {parkInfoShow ? (
             <TotalCount
+              title="园区本年度碳排放总量"
               total={parkInfo.emissionLoad}
               addOrsub={false}
               deviation={parkInfo.reduce}

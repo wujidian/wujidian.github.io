@@ -227,11 +227,12 @@ const ParkFootprintInfo: NextPage = () => {
       <div className="mt24">
         {parkInfoShow ? (
           <InfoCard
-            name={avtiveInfo.name}
-            loc={avtiveInfo.activityName}
+            name={avtiveInfo.activityName}
+            loc={avtiveInfo.name}
             addOrSub={false}
             total={avtiveInfo.emissionLoad}
             deviation={avtiveInfo.reduce}
+            totalTitle={"本年度碳排放总量"}
           ></InfoCard>
         ) : (
           <MySkeleton />
@@ -239,18 +240,19 @@ const ParkFootprintInfo: NextPage = () => {
       </div>
 
       <div className="lineChartBox">
-        {
-          parkEchartsShow ? (<LineChart
-            park_name={"交通用能碳足迹"}
+        {parkEchartsShow ? (
+          <LineChart
+            park_name={avtiveInfo.activityName}
             toDay_data={0}
             park_xAxisData={park_xAxisData}
             park_carbonEquivalent={park_carbonEquivalent}
             park_emissionLoad={park_emissionLoadData}
             setTimeType={(timeType) => setTimeType(Number(timeType))}
             timeType={timeType}
-          ></LineChart>):(<MySkeleton rows={8}/>)
-        }
-        
+          ></LineChart>
+        ) : (
+          <MySkeleton rows={8} />
+        )}
       </div>
       <div className="m24">
         <span className="pageTitle">每日基础数据 </span>
@@ -258,23 +260,23 @@ const ParkFootprintInfo: NextPage = () => {
         <span className="blueTip">2016年碳排放标准规范标准</span>
       </div>
       <div>
-        {
-          parkEchartsShow ? (
-            testMiniCardList.map((item, i) => {
-              return (
-                <MiniCard
-                  id={item.id}
-                  appendButto={item.appendButto}
-                  time={item.time}
-                  title={item.title}
-                  iconImg={item.iconImg}
-                  emissions={item.emissions}
-                  key={i.toString()}
-                ></MiniCard>
-              );
-            })
-          ):(<MySkeleton />)
-        }
+        {parkEchartsShow ? (
+          testMiniCardList.map((item, i) => {
+            return (
+              <MiniCard
+                id={item.id}
+                appendButto={item.appendButto}
+                time={item.time}
+                title={item.title}
+                iconImg={item.iconImg}
+                emissions={item.emissions}
+                key={i.toString()}
+              ></MiniCard>
+            );
+          })
+        ) : (
+          <MySkeleton />
+        )}
       </div>
       <TableModal
         show={modalShow}

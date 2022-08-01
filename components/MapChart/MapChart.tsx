@@ -88,8 +88,11 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
             let tipDom = "";
             tipDom = `
               <div>
-                ${tooltips.map((item) => {
-                  return `<div class="active-tooltip" style="background: #E3EEEA; border-radius: 5px; padding: 6px; transition: all 0.3s ease-in-out;  pointer-events: auto; ">
+                ${tooltips
+                  .map((item, index) => {
+                    return `<div class="active-tooltip" style="background: #E3EEEA; border-radius: 5px; padding: 6px; transition: all 0.3s ease-in-out;  pointer-events: auto; ${
+                      index+1 != tooltips.length && "margin-bottom: 10px;"
+                    } ">
                     <img src='/images/Vector-6.png'/>
                     <span style="font-size: 16px;color: #000;">${
                       item.name
@@ -109,7 +112,8 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
                     font-size: 12px;
                    "  onclick = "seeMore(${item.id})">查看更多></div>
                   </div>`;
-                })}
+                  })
+                  .join(" ")}
               </div>
           `;
             return tipDom;
@@ -124,7 +128,7 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
         coordinateSystem: "geo",
         rippleEffect: {
           //涟漪特效
-          number: 1, //涟漪的最大值
+          number: 2, //涟漪的最大值
         },
         symbol: "image:///images/halo.png",
         symbolSize: [70, 70],
