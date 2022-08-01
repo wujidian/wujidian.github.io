@@ -157,7 +157,7 @@ const ParkFootprint: NextPage = () => {
     setActiveParkInfoShow(false);
     try {
       let res = await GET_PARK_STATISTICS_API(parkId);
-      const statisticsInfoData = res.data.map((item) => {
+      let statisticsInfoData = res.data.map((item) => {
         return {
           id: item.id,
           title: item.name,
@@ -165,7 +165,7 @@ const ParkFootprint: NextPage = () => {
           time: item.startTime,
           iconImg: "/images/Group.png",
         };
-      });
+      });      
       setMiniCardList([...statisticsInfoData]);
     } catch {}
     setActiveParkInfoShow(true);
@@ -174,7 +174,8 @@ const ParkFootprint: NextPage = () => {
   const getPDFExportRecords = async (parkId: number) => {
     try {
       let res = await GET_PARK_REPORT_LIST_API(parkId);
-      setPDFExportRecords([...res.data]);
+      let PDFExportRecords = res.data.reverse()
+      setPDFExportRecords([...PDFExportRecords]);
     } catch {}
   };
 
@@ -224,7 +225,7 @@ const ParkFootprint: NextPage = () => {
       <div className="lineChartBox">
         {parkEchartsShow ? (
           <LineChart
-            park_name='园区碳足迹'
+            park_name="园区碳足迹"
             toDay_data={0}
             park_xAxisData={park_xAxisData}
             park_carbonEquivalent={park_carbonEquivalent}
@@ -273,7 +274,9 @@ const ParkFootprint: NextPage = () => {
           <span className="mr5"> 生成依据 </span>
           <span className="blueTip">ISO-14064碳核算标准</span>
         </div>
-        <button className="viewRecords" onClick={() => setcheckBoxShow(true)}>生成报告</button>
+        <button className="viewRecords" onClick={() => setcheckBoxShow(true)}>
+          生成报告
+        </button>
       </div>
 
       <div>

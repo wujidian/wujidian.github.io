@@ -165,7 +165,8 @@ const EnterpriseFootprintInfo: NextPage = () => {
       let res = await GET_ENTERPRISEK_REPORT_LIST_API(
         enterpriseFootprintInfoId
       );
-      setPDFExportRecords([...res.data]);
+      let PDFExportRecords = res.data.reverse()
+      setPDFExportRecords([...PDFExportRecords]);
     } catch {}
   };
 

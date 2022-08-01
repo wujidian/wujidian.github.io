@@ -89,7 +89,7 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
             tipDom = `
               <div>
                 ${tooltips.map((item) => {
-                  return `<div style="background: #E3EEEA; border-radius: 5px; padding:  6px;">
+                  return `<div class="active-tooltip" style="background: #E3EEEA; border-radius: 5px; padding: 6px; transition: all 0.3s ease-in-out;  pointer-events: auto; ">
                     <img src='/images/Vector-6.png'/>
                     <span style="font-size: 16px;color: #000;">${
                       item.name
@@ -107,9 +107,7 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
                     color: #005eaf;
                     text-align: right;
                     font-size: 12px;
-                   "  onclick = "seeMore(${
-                      item.id
-                    })">查看更多></div>
+                   "  onclick = "seeMore(${item.id})">查看更多></div>
                   </div>`;
                 })}
               </div>
