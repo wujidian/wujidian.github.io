@@ -44,7 +44,7 @@ const MiniCard = (MiniCardProps: MiniCardProps) => {
           <span className={style.tipsTitle}>碳排放量</span>
           <div>
             <span className={style.emissions}>{emissions}</span>
-            <span className="goldenlabel">kgCO2e</span>
+            <span className="goldenlabel">tCO2e</span>
           </div>
         </div>
       )}

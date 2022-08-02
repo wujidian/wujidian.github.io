@@ -14,7 +14,7 @@ const TotalCount = (TotalCountData: TotalCountData) => {
       <span className="TotalCountTitle">{title}</span>
       <div>
         <span className="TotalCountNum">{total}</span>
-        <span className="goldenlabel">kgCO2e</span>
+        <span className="goldenlabel">tCO2e</span>
       </div>
       <div className={style.line}></div>
       <div>

@@ -11,21 +11,24 @@ import { getLoc, removeLoc, setLoc, setQuery } from "@public/index";
 import { GET_ALL_PARK_LIST_API } from "@request/apis";
 import { ItemType } from "antd/lib/menu/hooks/useItems";
 
-const navitems: MenuProps["items"] = [
+const defaultNavitems: MenuProps["items"] = [
   {
     label: "园区碳总览",
     icon: <img src="/images/Vector-1.png"></img>,
     key: "/",
+    disabled: false,
   },
   {
     label: "园区碳足迹",
     icon: <img src="/images/Vector-2.png"></img>,
     key: "/parkFootprint",
+    disabled: false,
   },
   {
     label: "企业碳足迹",
     icon: <img src="/images/Vector-3.png"></img>,
     key: "/enterpriseFootprint",
+    disabled: false,
   },
 ];
 
@@ -34,7 +37,7 @@ const Header: NextPage = (req, res) => {
   const [current, setCurrent] = useState("/");
   const [isModalVisible, setisModalVisible] = useState(false);
   const { state, dispatch } = useContext(MyContext) as any;
-  const { loginStatus, userName,parkId } = state;
+  const { loginStatus, userName, parkId } = state;
   let [parkList, setParkList] = useState<ItemType[]>([
     {
       key: "0",
@@ -48,6 +51,7 @@ const Header: NextPage = (req, res) => {
         ),
     },
   ]);
+  const [navitems, setNavitems] = useState(defaultNavitems);
   const dropdownItems = <Menu items={parkList} />;
 
   /** 退出登录*/
@@ -93,32 +97,74 @@ const Header: NextPage = (req, res) => {
     });
     setParkList([...parkList]);
     const activePark = parkList.find((item) => item.key == parkId);
-    if(activePark){
+    if (activePark) {
       dispatch({
-          type: "UPDATE_USER_NAME",
-          payload: activePark.label.props.children,
-        })
+        type: "UPDATE_USER_NAME",
+        payload: activePark.label.props.children,
+      });
     }
-    
-
   };
 
   useEffect(() => {
     if (loginStatus === login_Status.login) {
       getAllParkList();
-     
-      
-      
-      // dispatch({
-      //   type: "UPDATE_USER_NAME",
-      //   payload: getLoc("userName"),
-      // })
     }
   }, [loginStatus]);
 
   useEffect(() => {
     setCurrent(router.pathname);
   }, [router.pathname]);
+
+  useEffect(() => {
+    parkId != 3
+      ? setNavitems([
+          {
+            label: "园区碳总览",
+            icon: <img src="/images/Vector-1.png"></img>,
+            key: "/",
+            disabled: false,
+          },
+          {
+            label: "园区碳足迹",
+            icon: <img src="/images/Vector-2.png"></img>,
+            key: "/parkFootprint",
+            disabled: false,
+          },
+          {
+            label: "企业碳足迹",
+            icon: <img src="/images/Vector-3.png"></img>,
+            key: "/enterpriseFootprint",
+            disabled: false,
+          },
+        ])
+      : setNavitems([
+          {
+            label: "园区碳总览",
+            icon: <img src="/images/Vector-1.png"></img>,
+            key: "/",
+            disabled: false,
+          },
+          {
+            label: "园区碳足迹",
+            icon: <img src="/images/Vector-2.png"></img>,
+            key: "/parkFootprint",
+            disabled: false,
+          },
+          {
+            label: "企业碳足迹",
+            icon: <img src="/images/Vector-3.png"></img>,
+            key: "/enterpriseFootprint",
+            disabled: true,
+          },
+        ]);
+    const activePark = parkList.find((item: any) => item.key == parkId);
+    if (activePark) {
+      dispatch({
+        type: "UPDATE_USER_NAME",
+        payload: (activePark as any).label.props.children,
+      });
+    }
+  }, [parkId]);
 
   return (
     <div className={styles.header}>

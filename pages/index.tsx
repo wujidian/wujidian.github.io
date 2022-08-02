@@ -1,9 +1,11 @@
 import type { NextPage } from "next";
 import MapChart from "@components/MapChart/MapChart";
 import LineBarChart from "@components/LineBarChart/LineBarChart";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GET_INDEX_INFO_API } from "@request/apis";
 import { getLoc } from "@public/index";
+import { MyContext } from "@components/MyContext/MyContext";
+import router from "next/router";
 export type mark_List = Array<{
   id: number;
   toDay_data: string | number;
@@ -13,30 +15,102 @@ export type mark_List = Array<{
   park_seriesData: Array<string>;
 }>;
 const locToDay = new Date().toLocaleDateString();
-const totalData = [
-  {
-    name: "绿电累计发电量",
-    value: "15456 kWh",
-  },
-  {
-    name: "园区累计用电量",
-    value: "15 kWh",
-  },
-  {
-    name: "园区今日用电量",
-    value: "1515万 kWh",
-  },
-  {
-    name: "园区本月发电量",
-    value: "1515万 kWh",
-  },
+type totalDataType = Array<{ name: string; value: string }>;
+const defaultTotalData: totalDataType[] = [
+  [
+    {
+      name: "园区企业数",
+      value: "15 家",
+    },
+    {
+      name: "园区累计用电量",
+      value: "108.56亿 kWh",
+    },
+    {
+      name: "园区本月用电量",
+      value: "182.12万 kWh",
+    },
+    {
+      name: "园区今日用电量",
+      value: "55.36万 kWh",
+    },
+  ],
+  [
+    {
+      name: "累计碳排放量",
+      value: "136237.23   tCO2e",
+    },
+    {
+      name: "本月碳排放量    ",
+      value: "12458.89    tCO2e",
+    },
+    {
+      name: "本年度碳配额指标",
+      value: "156723.09    tCO2e",
+    },
+    {
+      name: "节省碳配额",
+      value: "20485.86    tCO2e",
+    },
+  ],
+];
+const defaultForestAreaData: totalDataType[] = [
+  [
+    {
+      name: "实时总功率",
+      value: "50509.44   kW",
+    },
+    {
+      name: "装机总容量    ",
+      value: "442566.70    kVA",
+    },
+    {
+      name: "累计发电量",
+      value: "120.56亿   kWh",
+    },
+    {
+      name: "本月发电量",
+      value: "1347.23万    kWh",
+    },
+  ],
+  [
+    {
+      name: "累计碳排放量",
+      value: "0   tCO2e",
+    },
+    {
+      name: "累计碳汇量    ",
+      value: "34612.89    tCO2e",
+    },
+    {
+      name: "累计碳信用",
+      value: "796.23   tCO2e",
+    },
+    {
+      name: "",
+      value: "",
+    },
+  ],
 ];
 const Index: NextPage = ({ children }: any) => {
   let [markList, setmarkList] = useState<mark_List>([]);
+  const [totalData, setTotalData] = useState<totalDataType[]>(defaultTotalData);
+  const [markId, setMarkId] = useState<string>("1");
+  const { state, dispatch } = useContext(MyContext) as any;
+  const { parkId } = state;
 
   useEffect(() => {
     getIndexInfo();
   }, []);
+
+  const checkMack = (id: string) => {
+    if (id == "1") {
+      setTotalData([...defaultTotalData]);
+    } else {
+      setTotalData([...defaultForestAreaData]);
+    }
+    setMarkId(id);
+  };
 
   const getIndexInfo = async () => {
     let info = await GET_INDEX_INFO_API();
@@ -56,7 +130,10 @@ const Index: NextPage = ({ children }: any) => {
   return (
     <div className="parkOverview">
       <div className="map">
-        <MapChart markList={markList}></MapChart>
+        <MapChart
+          markList={markList}
+          checkMack={(id) => checkMack(id)}
+        ></MapChart>
       </div>
       <div className="index-left">
         <div className="top-left-box">
@@ -86,26 +163,42 @@ const Index: NextPage = ({ children }: any) => {
         </div>
       </div>
       <div className="index-right">
-        <div className="index-right-item">
-          {totalData.map((item, index) => {
-            return (
-              <div key={index}>
-                <span>{item.value}</span>
-                <span>{item.name}</span>
+        {totalData.map((item, index) => {
+          return (
+            <div key={index}>
+              <div className="index-right-item">
+                {item.map((data, i) => {
+                  return (
+                    <div key={i}>
+                      <span>{data.value}</span>
+                      <span>{data.name}</span>
+                    </div>
+                  );
+                })}
               </div>
-            );
-          })}
-        </div>
-        <div className="index-right-item">
-          {totalData.map((item, index) => {
-            return (
-              <div key={index}>
-                <span>{item.value}</span>
-                <span>{item.name}</span>
-              </div>
-            );
-          })}
-        </div>
+              {index == 0 && <div className="line"></div>}
+              {index == totalData.length - 1 && (
+                <div
+                  className="seeMore"
+                  onClick={() => {
+                    markId == "1"
+                      ? dispatch({
+                          type: "UPDATE_PARK_ID",
+                          payload: markId,
+                        })
+                      : dispatch({
+                          type: "UPDATE_PARK_ID",
+                          payload: "2",
+                        });
+                    router.push("/parkFootprint");
+                  }}
+                >
+                  查看更多
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

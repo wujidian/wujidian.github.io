@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import * as echarts from "echarts";
 import { ComposeOption } from "echarts/core";
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import {
   TitleComponentOption,
   TooltipComponentOption,
@@ -10,6 +10,7 @@ import {
 } from "echarts";
 import { XAXisOption, YAXisOption } from "echarts/types/dist/shared";
 import styles from "./LineChart.module.sass";
+import { MyContext } from "@components/MyContext/MyContext";
 const timeTypeList = [
   {
     label: "本周",
@@ -53,16 +54,18 @@ const LineChart: NextPage<LineChartPorps> = (porps: LineChartPorps) => {
     setTimeType,
     timeType,
   } = porps;
+  const { state } = useContext(MyContext) as any;
+  const { parkId } = state;
   const chartRef: any = useRef(null);
   let myChart: echarts.ECharts | null = null;
   const options: ECOption = {
     title: {
       text: park_name, //标题
-      subtext: "(kgCO2e)", // 副标题
+      subtext: "(tCO2e)", // 副标题
     },
     grid: {
       //图表位置的偏移量
-      left: "5%",
+      left: "%",
       right: "5%",
       bottom: "8%",
     },
@@ -76,11 +79,11 @@ const LineChart: NextPage<LineChartPorps> = (porps: LineChartPorps) => {
       type: "value",
     },
     legend: {
-      data: ["碳排放量", "基准排放量"],
+      data: ["碳排放量", "基准排放量","碳汇量"],
     },
     series: [
       {
-        name: "碳排放量",
+        name: parkId!=3?"碳排放量":"碳汇量",
         data: park_carbonEquivalent,
         type: "line",
         smooth: true,

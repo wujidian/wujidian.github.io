@@ -115,7 +115,7 @@ const LineBarChart: NextPage<LineBarChartPorps> = (
           <div className="toDay colorfff">{toDay}</div>
           <div className={style.toDayData}>
             {toDay_data}
-            <span className={style.units}>kgCO2e</span>
+            <span className={style.units}>tCO2e</span>
           </div>
         </div>
       </div>

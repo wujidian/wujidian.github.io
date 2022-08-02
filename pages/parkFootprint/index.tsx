@@ -213,7 +213,7 @@ const ParkFootprint: NextPage = () => {
         <div className="TotalCount-box">
           {parkInfoShow ? (
             <TotalCount
-              title="园区本年度碳排放总量"
+              title={`${parkInfo.id==3?'林区本年度碳汇总量':"园区本年度碳排放总量"}`}
               total={parkInfo.emissionLoad}
               addOrsub={false}
               deviation={parkInfo.reduce}
@@ -226,7 +226,7 @@ const ParkFootprint: NextPage = () => {
       <div className="lineChartBox">
         {parkEchartsShow ? (
           <LineChart
-            park_name="园区碳足迹"
+            park_name={`${parkInfo.id==3?'林区':"园区"}碳足迹`}
             toDay_data={0}
             park_xAxisData={park_xAxisData}
             park_carbonEquivalent={park_carbonEquivalent}
@@ -271,7 +271,7 @@ const ParkFootprint: NextPage = () => {
 
       <div className="m24 flex jcsbcentennt">
         <div>
-          <span className="pageTitle">园区碳核算报告 </span>
+          <span className="pageTitle">{`${parkInfo.id==3?'林区':"园区"}碳核算报告`}</span>
           <span className="mr5"> 生成依据 </span>
           <span className="blueTip">ISO-14064碳核算标准</span>
         </div>

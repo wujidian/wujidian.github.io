@@ -20,7 +20,7 @@ type ECOption = ComposeOption<
   | TooltipComponentOption
 >;
 
-const MapChart = ({ markList }: { markList: mark_List }) => {
+const MapChart = ({markList,checkMack}: {markList: mark_List;checkMack: (id: string) => void},) => {
   const chartRef: any = useRef(null);
   let myChart: echarts.ECharts | null | void = null;
   const { dispatch } = useContext(MyContext) as any;
@@ -68,9 +68,12 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
         padding: [0, 1, 1, 1],
         showContent: true,
         formatter: (params: any) => {
+         
+
           if (params.componentSubType !== "effectScatter") {
             return "";
           } else {
+            checkMack(params.data.id);
             const sameMarkList = markList.filter((item) => {
               return (
                 item.id != params.data.id &&
@@ -78,20 +81,17 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
                 item.value[1] == params.data.value[1]
               );
             });
-            // console.log(sameMarkList);
             let tooltips = [];
             tooltips.push(params.data);
             sameMarkList.length > 0 && tooltips.push(...sameMarkList);
-
-            console.log(tooltips);
 
             let tipDom = "";
             tipDom = `
               <div>
                 ${tooltips
                   .map((item, index) => {
-                    return `<div class="active-tooltip" style="background: #E3EEEA; border-radius: 5px; padding: 6px; transition: all 0.3s ease-in-out;  pointer-events: auto; ${
-                      index+1 != tooltips.length && "margin-bottom: 10px;"
+                    return `<div class="active-tooltip" style="text-align: left; background: #E3EEEA; border-radius: 5px; padding: 6px; transition: all 0.3s ease-in-out;  pointer-events: auto; ${
+                      index + 1 == tooltips.length && "margin-bottom: 10px;"
                     } ">
                     <img src='/images/Vector-6.png'/>
                     <span style="font-size: 16px;color: #000;">${
@@ -99,11 +99,13 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
                     }</span>
                     <br/>
                     <span>
-                        <span style="font-size: 12px;color: #778399;">碳排放量</span>
+                        <span style="font-size: 12px;color: #778399;">${
+                          item.id == 3 ? "碳汇量" : "碳排放量"
+                        }</span>
                         <span style="font-size: 16px;color: #052835;">${
                           item.value[2] || 0.0
                         }</span>
-                    <span style=" background: #F6CD7D; border-radius: 37px;padding: 2px 6px; font-size: 12px;">kgCO2e</span>
+                    <span style=" background: #F6CD7D; border-radius: 37px;padding: 2px 6px; font-size: 12px;">tCO2e</span>
                     </span>
                     <div id="seeMore"  style="margin-top:5px; 
                     pointer-events: auto; 
@@ -113,6 +115,7 @@ const MapChart = ({ markList }: { markList: mark_List }) => {
                    "  onclick = "seeMore(${item.id})">查看更多></div>
                   </div>`;
                   })
+                  .reverse()
                   .join(" ")}
               </div>
           `;

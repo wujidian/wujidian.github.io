@@ -82,7 +82,7 @@ const EnterpriseFootprint: NextPage = () => {
         return (
           <div>
             <span>{emissions} </span>
-            <div className="goldenlabel">kgCO2e</div>
+            <div className="goldenlabel">tCO2e</div>
           </div>
         );
       },

@@ -30,7 +30,7 @@ const InfoCard = (InfoCardData: InfoCardData) => {
         <span className="TotalCountTitle">{totalTitle}</span>
         <div>
           <span className="TotalCountNum">{total}</span>
-          <span className="goldenlabel">kgCO2e</span>
+          <span className="goldenlabel">tCO2e</span>
         </div>
         <div className={styles.line}></div>
         <div>
