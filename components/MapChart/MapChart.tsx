@@ -91,7 +91,7 @@ const MapChart = ({markList,checkMack}: {markList: mark_List;checkMack: (id: str
                 ${tooltips
                   .map((item, index) => {
                     return `<div class="active-tooltip" style="text-align: left; background: #E3EEEA; border-radius: 5px; padding: 6px; transition: all 0.3s ease-in-out;  pointer-events: auto; ${
-                      index + 1 == tooltips.length && "margin-bottom: 10px;"
+                      index + 1 == tooltips.length &&  tooltips.length !=1 && "margin-bottom: 10px;"
                     } ">
                     <img src='/images/Vector-6.png'/>
                     <span style="font-size: 16px;color: #000;">${
