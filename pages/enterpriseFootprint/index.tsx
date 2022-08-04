@@ -96,7 +96,7 @@ const EnterpriseFootprint: NextPage = () => {
       render: (e) =>
         CheckDetailsBTN({
           btnClickFun: () => {
-            console.log(e.id);
+
             dispatch({
               type: "UPDATE_ENTERPRISE_FOOTPRINT_INFO_ID",
               payload: e.id,

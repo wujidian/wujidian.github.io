@@ -2,6 +2,7 @@ import { Modal, Table } from "antd";
 import { detailsTable } from "types/types";
 import type { ColumnsType } from "antd/lib/table";
 interface tableModal {
+  title: string;
   show: boolean;
   onCancel?: () => void;
   columns: ColumnsType<detailsTable>;
@@ -9,10 +10,10 @@ interface tableModal {
 }
 
 const TableModal = (tableModal: tableModal) => {
-  const { show, onCancel, data, columns } = tableModal;
+  const { title,show, onCancel, data, columns } = tableModal;
   return (
     <Modal
-      title="asd"
+      title={title}
       visible={show}
       onCancel={onCancel}
       footer={null}

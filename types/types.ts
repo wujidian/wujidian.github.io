@@ -185,6 +185,8 @@ export interface park_Activity_Detail extends success_Response {
     num: number;
     data: [
       {
+        start_time: any;
+        startTime: any;
         equipmentNo: string;
         name: string;
         serveName: string;

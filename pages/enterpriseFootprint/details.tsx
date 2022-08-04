@@ -11,6 +11,7 @@ import { company_Activity_Detail, detailsTable } from "types/types";
 import {
   GET_CARBON_DAY_BASE_DETAIL_API,
   GET_ENTERPRISE_CARBON_DAY_BASE_DETAIL_API,
+  GET_ENTERPRISE_CARBON_DAY_BASE_DETAIL_DETAIL_API,
   GET_ENTERPRISE_CARBON_ECHARTS_DATA_DETAIL_API,
 } from "@request/apis";
 import { MyContext } from "@components/MyContext/MyContext";
@@ -133,8 +134,39 @@ const EnterpriseFootprintDetails: NextPage = () => {
   const [enterpriseInfoLoding, setEnterpriseInfoLoding] = useState(true);
   const [enterpriseEchartsLoding, setEnterpriseEchartsLoding] = useState(true);
   const [enterpriseDayBaseLoding, setEnterpriseDayBaseLoding] = useState(true);
+  const [modelTitle, setModelTitle] = useState("");
 
-  const checkDetails = (id: number) => {
+  /**获取企业碳足迹详情*/
+  const checkDetails = async (id: number) => {
+    let res = await GET_ENTERPRISE_CARBON_DAY_BASE_DETAIL_DETAIL_API(
+      enterpriseFootprintInfoId,
+      id,
+      pageIndex,
+      pageSize
+    );
+    let tableData: detailsTable[] = res.data.data.map((item, i) => {
+      return {
+        key: i.toString(),
+        deviceID: {
+          title: item.equipmentNo,
+          subtitle: item.behavior,
+        },
+        enterpriseID: {
+          title: item.serveName,
+          subtitle: item.address,
+        },
+        serviceenterpriseID: {
+          title: item.name,
+          subtitle: item.address,
+        },
+        behavior: item.behavior,
+        startAndEndTime: item.start_time,
+        exhaustGas: item.gasType,
+        emissions: item.emissionLoad,
+        carbonEmissions: item.carbonEquivalent,
+      };
+    });
+    setTableData([...tableData]);
     setmodalShow(true);
   };
 
@@ -190,8 +222,11 @@ const EnterpriseFootprintDetails: NextPage = () => {
           time: item.startTime,
           iconImg: "/images/Group.png",
           appendButto: CheckDetailsBTN({
-            btnClickFun: () => checkDetails(item.id),
-            btnText: "查看报告",
+            btnClickFun: () => {
+              checkDetails(item.id);
+              setModelTitle(item.name);
+            },
+            btnText: "查看详情",
           }),
         };
       });
@@ -270,7 +305,8 @@ const EnterpriseFootprintDetails: NextPage = () => {
         show={modalShow}
         onCancel={() => setmodalShow(false)}
         columns={columns}
-        data={data}
+        data={tableData}
+        title={`${modelTitle}排放`}
       ></TableModal>
     </div>
   );

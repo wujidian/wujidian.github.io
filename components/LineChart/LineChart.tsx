@@ -13,15 +13,15 @@ import styles from "./LineChart.module.sass";
 import { MyContext } from "@components/MyContext/MyContext";
 const timeTypeList = [
   {
-    label: "本周",
+    label: "近7天",
     id: "0",
   },
   {
-    label: "月度",
+    label: "近30天",
     id: "1",
   },
   {
-    label: "年度",
+    label: "近1年",
     id: "2",
   },
 ];
@@ -41,7 +41,7 @@ type LineChartPorps = {
   park_carbonEquivalent: string[] | number[];
   park_emissionLoad: string[] | number[];
   setTimeType: (timeType: string) => void;
-  timeType: string|number;
+  timeType: string | number;
 };
 
 const LineChart: NextPage<LineChartPorps> = (porps: LineChartPorps) => {
@@ -65,7 +65,7 @@ const LineChart: NextPage<LineChartPorps> = (porps: LineChartPorps) => {
     },
     grid: {
       //图表位置的偏移量
-      left: "%",
+      left: "5%",
       right: "5%",
       bottom: "8%",
     },
@@ -79,15 +79,21 @@ const LineChart: NextPage<LineChartPorps> = (porps: LineChartPorps) => {
       type: "value",
     },
     legend: {
-      data: ["碳排放量", "基准排放量","碳汇量"],
+      data: ["碳排放量", "基准排放量", "碳汇量"],
+    },
+    tooltip: {
+      trigger: "axis",
     },
     series: [
       {
-        name: parkId!=3?"碳排放量":"碳汇量",
+        name: parkId != 3 ? "碳排放量" : "碳汇量",
         data: park_carbonEquivalent,
         type: "line",
         smooth: true,
+        connectNulls: true,
+       
         areaStyle: {},
+        
       },
       // {
       //   name: "基准排放量",

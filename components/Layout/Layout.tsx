@@ -20,7 +20,7 @@ const Layout = ({ children, router }: { children: any; router: any }) => {
     Router.push("/");
   };
   useEffect(() => {
-    console.log(router.pathname);
+
     if (loginStatus != login_Status.login && router.pathname != "/login" && router.pathname != "/") {
       setIsModalVisible(true);
     }

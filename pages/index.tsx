@@ -7,6 +7,7 @@ import { getLoc } from "@public/index";
 import { MyContext } from "@components/MyContext/MyContext";
 import router from "next/router";
 export type mark_List = Array<{
+  park_color: string;
   id: number;
   toDay_data: string | number;
   name: string;
@@ -14,6 +15,7 @@ export type mark_List = Array<{
   park_xAxisData: Array<string>;
   park_seriesData: Array<string>;
 }>;
+
 const locToDay = new Date().toLocaleDateString();
 type totalDataType = Array<{ name: string; value: string }>;
 const defaultTotalData: totalDataType[] = [
@@ -92,6 +94,11 @@ const defaultForestAreaData: totalDataType[] = [
     },
   ],
 ];
+export const markColorMap = new Map([
+  [1, "rgba(246, 205, 125, 1)"],
+  [2, "rgba(6, 205, 162, 1)"],
+  [3, "rgba(30, 167, 255, 1)"],
+]);
 const Index: NextPage = ({ children }: any) => {
   let [markList, setmarkList] = useState<mark_List>([]);
   const [totalData, setTotalData] = useState<totalDataType[]>(defaultTotalData);
@@ -118,9 +125,10 @@ const Index: NextPage = ({ children }: any) => {
       return {
         id: item.id,
         name: item.name,
-        value: [...item.location.coordinates, item.emissionLoad],
+        value: [...item.location.coordinates, item.emissionLoad, item.id],
         park_xAxisData: [...item.dataList.map((item) => item.startTime)],
         park_seriesData: [...item.dataList.map((data) => data.emissionLoad)],
+        park_color: markColorMap.get(item.id) as string,
         toDay_data: item.emissionLoad,
       };
     });
@@ -140,8 +148,18 @@ const Index: NextPage = ({ children }: any) => {
           <div className="text-box">
             <div className="img-rotate"></div>
             <div className="title-box">
-              <div className="line"></div>
-              <span className="title">园区碳总览</span>
+              <div className="title-box-text">
+                <div className="line"></div>
+                <span className="title">园区碳总览</span>
+              </div>
+              <div className="mark-item-box">
+                {markList.map((item, i) => (
+                  <div key={i}>
+                    <i style={{border:`3px solid ${item.park_color}` }}></i>
+                    <span>{item.name}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -151,7 +169,7 @@ const Index: NextPage = ({ children }: any) => {
               <div key={index} className="m10 ml24">
                 <LineBarChart
                   park_name={item.name}
-                  park_color={""}
+                  park_color={item.park_color}
                   toDay={locToDay}
                   toDay_data={item.toDay_data}
                   park_xAxisData={item.park_xAxisData}
@@ -200,6 +218,7 @@ const Index: NextPage = ({ children }: any) => {
           );
         })}
       </div>
+      <span className="WordID">© 2022 绿色碳链 All Rights Reserved.</span>
     </div>
   );
 };

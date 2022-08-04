@@ -45,7 +45,7 @@ const LineBarChart: NextPage<LineBarChartPorps> = (
       top: "15%",
       left: "0%",
       right: "0%",
-      bottom: "5%",
+      bottom: "10%",
     },
     title: {
       show: false,
@@ -68,11 +68,14 @@ const LineBarChart: NextPage<LineBarChartPorps> = (
         type: "line",
         smooth: true,
         connectNulls: true,
+        itemStyle:{
+          color: park_color,
+        },
         markPoint: {
           data: [
             {
               name: "",
-              coord: [park_xAxisData[0], park_seriesData[0]],
+              coord: [park_xAxisData[6], park_seriesData[6]],
             },
           ],
           symbol: "circle",
@@ -108,7 +111,10 @@ const LineBarChart: NextPage<LineBarChartPorps> = (
 
   return (
     <div className={style.lineBarChartBox} style={{ textAlign: "center" }}>
-      <div className={style.parkName}>{park_name}</div>
+      <div className={style.parkName}>
+        <span className={style.markItem} style={{border:`3px solid ${park_color}` }}></span>
+        <span>{park_name}</span>
+      </div>
       <div className="flex">
         <div ref={chartRef} style={{ height: "70px", width: "380px" }}></div>
         <div className={style.todayTotal}>

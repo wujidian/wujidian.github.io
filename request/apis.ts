@@ -351,3 +351,26 @@ export const GET_CARBON_DAY_BASE_DETAIL_API: companyDetails_DayDataApi =
       { method: "get", hint: false }
     );
   };
+
+/**企业活动碳足迹 三级路由  —— 每日基础活动  —— 详细信息*/
+export const GET_ENTERPRISE_CARBON_DAY_BASE_DETAIL_DETAIL =
+  "api/company/carbonActivitys/data";
+/**获取园区碳足迹 —— 二级页面 —— 每日基础活动  —— 详细信息
+ * @param id 公司id
+ * @param activityId 碳活动id
+ * @param pageIndex 需要的数据范围
+ * @param pageSize 需要的数据范围
+ */
+export const GET_ENTERPRISE_CARBON_DAY_BASE_DETAIL_DETAIL_API: park_Activity_DetailApi =
+  function (
+    id: number,
+    activityId: number,
+    pageIndex: number = 1,
+    pageSize: number = 10
+  ) {
+    return request(
+      `${GET_ENTERPRISE_CARBON_DAY_BASE_DETAIL_DETAIL}/${id}?activityId=${activityId}&pageIndex=${pageIndex}&pageSize=${pageSize}`,
+      {},
+      { method: "get", hint: false }
+    );
+  };

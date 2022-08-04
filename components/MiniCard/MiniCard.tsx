@@ -40,7 +40,7 @@ const MiniCard = (MiniCardProps: MiniCardProps) => {
         </span>
       </div>
       {emissions && (
-        <div>
+        <div className={style.miniCardTipsTitleBox} style={appendButto && {width:"100%"}}>
           <span className={style.tipsTitle}>碳排放量</span>
           <div>
             <span className={style.emissions}>{emissions}</span>

@@ -20,7 +20,25 @@ type ECOption = ComposeOption<
   | TooltipComponentOption
 >;
 
-const MapChart = ({markList,checkMack}: {markList: mark_List;checkMack: (id: string) => void},) => {
+const markIconMap = new Map<number, string>([
+  [1, "/images/Vector-6.png"],
+  [2, "/images/Vector-8.png"],
+  [3, "/images/Vector-9.png"],
+]);
+
+const markIconMap2 = new Map<number, string>([
+  [1, "/images/Vector-6.png"],
+  [2, "/images/Vector-8.png"],
+  [3, "/images/Vector-9.png"],
+])
+
+const MapChart = ({
+  markList,
+  checkMack,
+}: {
+  markList: mark_List;
+  checkMack: (id: string) => void;
+}) => {
   const chartRef: any = useRef(null);
   let myChart: echarts.ECharts | null | void = null;
   const { dispatch } = useContext(MyContext) as any;
@@ -37,7 +55,6 @@ const MapChart = ({markList,checkMack}: {markList: mark_List;checkMack: (id: str
       });
     }
   });
-
   const options: ECOption = {
     backgroundColor: "rgba(0,0,0,0)",
     geo: {
@@ -68,8 +85,6 @@ const MapChart = ({markList,checkMack}: {markList: mark_List;checkMack: (id: str
         padding: [0, 1, 1, 1],
         showContent: true,
         formatter: (params: any) => {
-         
-
           if (params.componentSubType !== "effectScatter") {
             return "";
           } else {
@@ -84,16 +99,17 @@ const MapChart = ({markList,checkMack}: {markList: mark_List;checkMack: (id: str
             let tooltips = [];
             tooltips.push(params.data);
             sameMarkList.length > 0 && tooltips.push(...sameMarkList);
-
             let tipDom = "";
             tipDom = `
               <div>
                 ${tooltips
-                  .map((item, index) => {
+                  .map((item, index) => {      
                     return `<div class="active-tooltip" style="text-align: left; background: #E3EEEA; border-radius: 5px; padding: 6px; transition: all 0.3s ease-in-out;  pointer-events: auto; ${
-                      index + 1 == tooltips.length &&  tooltips.length !=1 && "margin-bottom: 10px;"
+                      index + 1 == tooltips.length &&
+                      tooltips.length != 1 &&
+                      "margin-bottom: 10px;"
                     } ">
-                    <img src='/images/Vector-6.png'/>
+                    <img src=${markIconMap.get(item.id)}/>
                     <span style="font-size: 16px;color: #000;">${
                       item.name
                     }</span>
@@ -133,7 +149,14 @@ const MapChart = ({markList,checkMack}: {markList: mark_List;checkMack: (id: str
           //涟漪特效
           number: 2, //涟漪的最大值
         },
-        symbol: "image:///images/halo.png",
+        symbol: (value, params) => {
+           if((params.data as any).id == 1){
+            return  "image:///images/halo3.png"
+          }else{
+            return  "image:///images/halo.png"
+          }
+          
+        },
         symbolSize: [70, 70],
         symbolOffset: [0, "-10%"],
         data: markList,
@@ -145,7 +168,13 @@ const MapChart = ({markList,checkMack}: {markList: mark_List;checkMack: (id: str
           //涟漪特效
           number: 0, //涟漪的最大值
         },
-        symbol: "image:///images/mark.png",
+        symbol:(value, params) => {          
+          if((params.data as any).id == 1){
+            return  "image:///images/mark2.png"
+          }else{
+            return  "image:///images/mark.png"
+          }
+        },
         symbolSize: [30, 52],
         symbolOffset: [0, "-50%"],
         data: markList,
@@ -165,11 +194,12 @@ const MapChart = ({markList,checkMack}: {markList: mark_List;checkMack: (id: str
             colorStops: [
               {
                 offset: 0,
-                color: "rgb(246,205,125)",
+                color: "rgb(6,205,162)",
               },
               {
                 offset: 1,
-                color: "rgb(6,205,162)",
+                color: "rgb(246,205,125)",
+               
               },
             ],
           },

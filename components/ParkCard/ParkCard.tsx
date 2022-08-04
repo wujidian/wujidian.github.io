@@ -1,4 +1,3 @@
-import { Skeleton } from "antd";
 import style from "./ParkCard.module.sass";
 export interface ParkCardData {
   parkName: string;
@@ -13,7 +12,17 @@ const ParkCard = (ParkCardData: ParkCardData) => {
     ParkCardData;
   return (
     <div className={style.ParkCard}>
-      <img className={style.industry} src="/images/industry.png" alt="" />
+      <img
+        className={style.industry}
+        src={
+          parkName == "德阳工业园区"
+            ? "/images/industry.png"
+            : parkName == "绿电基地"
+            ? "/images/industry3.png"
+            : "/images/industry.png"
+        }
+        alt=""
+      />
       <div className={style.parkInfoBox}>
         <span className={style.parkName}>{parkName}</span>
         <span className={style.parkLoc}>{parkLoc}</span>

@@ -53,7 +53,7 @@ const Login: NextPage = () => {
       account,
       password,
     });
-    console.log(res.data.token);
+
     message.success("登录成功");
     dispatch({
       type: "UPDATE_LOGIN_STATUS",

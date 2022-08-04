@@ -110,6 +110,7 @@ const ParkFootprintInfo: NextPage = () => {
   const [parkInfoShow, setParkInfoShow] = useState(true);
   const [parkEchartsShow, setParkEchartsShow] = useState(true);
   const [activeParkInfoShow, setActiveParkInfoShow] = useState(true);
+  const [modelTitle, setModelTitle] = useState('')
 
   /**获取园区详细信息*/
   const getParkDetaliInfo = async () => {
@@ -164,8 +165,11 @@ const ParkFootprintInfo: NextPage = () => {
           time: item.startTime,
           iconImg: "/images/Group.png",
           appendButto: CheckDetailsBTN({
-            btnClickFun: () => checkDetails(item.id),
-            btnText: "查看报告",
+            btnClickFun: () => {
+              checkDetails(item.id);
+              setModelTitle(item.name);
+            },
+            btnText: "查看详情",
           }),
         };
       });
@@ -184,7 +188,6 @@ const ParkFootprintInfo: NextPage = () => {
   }, [parkId, parkFootprintInfoId, timeType]);
 
   const checkDetails = async (id: number) => {
-    console.log(id);
     let res = await GET_PARK_ACTIVITY_DAY_BASE_DETAIL_API(
       1,
       id,
@@ -206,9 +209,9 @@ const ParkFootprintInfo: NextPage = () => {
           title: item.name,
           subtitle: item.address,
         },
-        behavior: "车辆运行",
-        startAndEndTime: "2022/05/22 14:12 - 16:32",
-        exhaustGas: "CO2",
+        behavior:item.behavior,
+        startAndEndTime: item.start_time,
+        exhaustGas:item.gasType,
         emissions: item.emissionLoad,
         carbonEmissions: item.carbonEquivalent,
       };
@@ -279,6 +282,7 @@ const ParkFootprintInfo: NextPage = () => {
         )}
       </div>
       <TableModal
+        title={`${modelTitle}排放`}
         show={modalShow}
         onCancel={() => setmodalShow(false)}
         columns={columns}

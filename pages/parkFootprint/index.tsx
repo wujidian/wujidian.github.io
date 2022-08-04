@@ -84,7 +84,7 @@ const ParkFootprint: NextPage = () => {
   const viewRecordsPDF = async (activeId: number | string) => {
     try {
       let res = await VIEW_RECORDS_PDF_API(activeId);
-      console.log(res);
+
       setPdfParkInfo(res.data);
       setPdfShow(true);
     } catch {
