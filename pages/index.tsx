@@ -81,11 +81,11 @@ const defaultForestAreaData: totalDataType[] = [
       value: "0   tCO2e",
     },
     {
-      name: "累计碳汇量    ",
+      name: "累计碳信用(碳汇)",
       value: "34612.89    tCO2e",
     },
     {
-      name: "累计碳信用",
+      name: "累计碳信用(新能源)",
       value: "796.23   tCO2e",
     },
     {

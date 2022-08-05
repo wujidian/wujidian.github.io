@@ -26,11 +26,7 @@ const markIconMap = new Map<number, string>([
   [3, "/images/Vector-9.png"],
 ]);
 
-const markIconMap2 = new Map<number, string>([
-  [1, "/images/Vector-6.png"],
-  [2, "/images/Vector-8.png"],
-  [3, "/images/Vector-9.png"],
-])
+
 
 const MapChart = ({
   markList,

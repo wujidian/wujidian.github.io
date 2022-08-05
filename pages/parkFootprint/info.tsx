@@ -235,7 +235,7 @@ const ParkFootprintInfo: NextPage = () => {
             addOrSub={false}
             total={avtiveInfo.emissionLoad}
             deviation={avtiveInfo.reduce}
-            totalTitle={"本年度碳排放总量"}
+            totalTitle={parkId==3?"本年度累计碳汇量":"本年度碳排放总量"}
           ></InfoCard>
         ) : (
           <MySkeleton />
@@ -270,6 +270,7 @@ const ParkFootprintInfo: NextPage = () => {
             return (
               <MiniCard
                 id={item.id}
+                dataTitle={parkId==3?"碳汇量":"碳排放量"}
                 appendButto={item.appendButto}
                 time={item.time}
                 title={item.title}

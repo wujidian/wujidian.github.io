@@ -13,10 +13,11 @@ export type MiniCardProps = {
   type?: string;
   linkFun?: () => void;
   appendButto?: JSX.Element | any;
+  dataTitle?: string;
 };
 
 const MiniCard = (MiniCardProps: MiniCardProps) => {
-  const { title, iconImg, time, emissions, appendButto, linkFun, type } =
+  const { title, iconImg, time, emissions, appendButto, linkFun, type,dataTitle } =
     MiniCardProps;
   return (
     <div className={style.miniCardBox} onClick={linkFun}>
@@ -41,7 +42,7 @@ const MiniCard = (MiniCardProps: MiniCardProps) => {
       </div>
       {emissions && (
         <div className={style.miniCardTipsTitleBox} style={appendButto && {width:"100%"}}>
-          <span className={style.tipsTitle}>碳排放量</span>
+          <span className={style.tipsTitle}>{dataTitle || '碳排放量'}</span>
           <div>
             <span className={style.emissions}>{emissions}</span>
             <span className="goldenlabel">tCO2e</span>

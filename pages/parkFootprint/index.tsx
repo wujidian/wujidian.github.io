@@ -213,7 +213,7 @@ const ParkFootprint: NextPage = () => {
         <div className="TotalCount-box">
           {parkInfoShow ? (
             <TotalCount
-              title={`${parkInfo.id==3?'林区本年度碳汇总量':"园区本年度碳排放总量"}`}
+              title={`${parkInfo.id==3?'林区本年度累计碳信用总量':"园区本年度碳排放总量"}`}
               total={parkInfo.emissionLoad}
               addOrsub={false}
               deviation={parkInfo.reduce}
@@ -260,6 +260,7 @@ const ParkFootprint: NextPage = () => {
                   iconImg={item.iconImg}
                   emissions={item.emissions}
                   key={i.toString()}
+                  dataTitle={parkId==3?"碳汇量":"碳排放量"}
                 ></MiniCard>
               );
             })}

@@ -171,7 +171,7 @@ const Header: NextPage = (req, res) => {
       <div className={styles.logo}>
         <img className={styles.logoImg} src="/images/logo.png" alt="" />
         <div className={styles.logoTextBox}>
-          <img src="/images/logoText.png" alt="" />
+          <div className={styles.textWord}>绿链数能综合服务系统</div>
           <span>可信绿色数据服务平台</span>
         </div>
       </div>
