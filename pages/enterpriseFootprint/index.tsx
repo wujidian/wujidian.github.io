@@ -183,7 +183,9 @@ const EnterpriseFootprint: NextPage = () => {
         <div>
           <span className="pageTitle">企业碳排放概览 </span>
           <span className="mr5"> 生成依据 </span>
-          <span className="blueTip">2006年工程建设标准规范标准</span>
+          <span className="blueTip">{
+            parkId == 3 ? '《林业碳汇项目审定和核证指南》GB/T 41198-2021' : '《企业温室气体排放核算方法与报告指南》'
+          }</span>
         </div>
        
       </div>

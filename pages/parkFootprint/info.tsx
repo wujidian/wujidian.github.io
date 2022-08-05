@@ -166,7 +166,7 @@ const ParkFootprintInfo: NextPage = () => {
           iconImg: "/images/Group.png",
           appendButto: CheckDetailsBTN({
             btnClickFun: () => {
-              checkDetails(item.id);
+              checkDetails(item.id, item.name);
               setModelTitle(item.name);
             },
             btnText: "查看详情",
@@ -187,7 +187,7 @@ const ParkFootprintInfo: NextPage = () => {
     getParkDetaliEchartsInfo();
   }, [parkId, parkFootprintInfoId, timeType]);
 
-  const checkDetails = async (id: number) => {
+  const checkDetails = async (id: number,name:string) => {
     let res = await GET_PARK_ACTIVITY_DAY_BASE_DETAIL_API(
       1,
       id,
@@ -199,7 +199,7 @@ const ParkFootprintInfo: NextPage = () => {
         key: i.toString(),
         deviceID: {
           title: item.equipmentNo,
-          subtitle: item.behavior,
+          subtitle: name,
         },
         enterpriseID: {
           title: item.serveName,
@@ -260,7 +260,9 @@ const ParkFootprintInfo: NextPage = () => {
       <div className="m24">
         <span className="pageTitle">每日基础数据 </span>
         <span className="mr5"> 生成依据 </span>
-        <span className="blueTip">2016年碳排放标准规范标准</span>
+        <span className="blueTip">{
+            parkId == 3 ? '《林业碳汇项目审定和核证指南》GB/T 41198-2021' : '《企业温室气体排放核算方法与报告指南》'
+          }</span>
       </div>
       <div>
         {parkEchartsShow ? (

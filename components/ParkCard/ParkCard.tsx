@@ -19,7 +19,7 @@ const ParkCard = (ParkCardData: ParkCardData) => {
             ? "/images/industry.png"
             : parkName == "绿电基地"
             ? "/images/industry3.png"
-            : "/images/industry.png"
+            : "/images/industry2.png"
         }
         alt=""
       />

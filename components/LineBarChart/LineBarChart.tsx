@@ -68,27 +68,8 @@ const LineBarChart: NextPage<LineBarChartPorps> = (
         type: "line",
         smooth: true,
         connectNulls: true,
-        itemStyle:{
+        itemStyle: {
           color: park_color,
-        },
-        markPoint: {
-          data: [
-            {
-              name: "",
-              coord: [park_xAxisData[6], park_seriesData[6]],
-            },
-          ],
-          symbol: "circle",
-          symbolSize: 15, // 标记图形的大小
-          itemStyle: {
-            color: "#fff", // 标注点颜色
-            borderType: "solid",
-            borderWidth: 3,
-            borderColor: park_color,
-          },
-          label: {
-            show: false,
-          },
         },
       },
     ],
@@ -112,11 +93,14 @@ const LineBarChart: NextPage<LineBarChartPorps> = (
   return (
     <div className={style.lineBarChartBox} style={{ textAlign: "center" }}>
       <div className={style.parkName}>
-        <span className={style.markItem} style={{border:`3px solid ${park_color}` }}></span>
+        <span
+          className={style.markItem}
+          style={{ border: `3px solid ${park_color}` }}
+        ></span>
         <span>{park_name}</span>
       </div>
       <div className="flex">
-        <div ref={chartRef} style={{ height: "70px", width: "380px" }}></div>
+        <div className="chartRef" ref={chartRef} style={{ height: "70px", width: "200px" }}></div>
         <div className={style.todayTotal}>
           <div className="toDay colorfff">{toDay}</div>
           <div className={style.toDayData}>

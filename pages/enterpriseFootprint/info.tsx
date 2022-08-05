@@ -25,7 +25,7 @@ import { company_Info, createParkReport, parkReportList } from "types/types";
 
 const EnterpriseFootprintInfo: NextPage = () => {
   const { state, dispatch } = useContext(MyContext) as any;
-  const { enterpriseFootprintInfoId } = state;
+  const { enterpriseFootprintInfoId,parkId } = state;
   const router = useRouter();
   const { RangePicker } = DatePicker;
 
@@ -254,7 +254,9 @@ const EnterpriseFootprintInfo: NextPage = () => {
         <div>
           <span className="pageTitle">企业碳核算报告 </span>
           <span className="mr5"> 生成依据 </span>
-          <span className="blueTip">ISO-14064碳核算标准</span>
+          <span className="blueTip">{
+            parkId == 3 ? '《林业碳汇项目审定和核证指南》GB/T 41198-2021' : '《企业温室气体排放核算方法与报告指南》'
+          }</span>
         </div>
         <button
           className="viewRecords"

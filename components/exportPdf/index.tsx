@@ -4,66 +4,7 @@ import { CheckboxValueType } from "antd/lib/checkbox/Group";
 import { useEffect, useState } from "react";
 import { createParkReport } from "types/types";
 import styles from "./index.module.sass";
-// import "moment/locale/zh-cn";
-// import locale from "antd/es/date-picker/locale/zh_CN";
-let prakInfo = {
-  id: 0,
-  name: "成都园区",
-  area: "58000",
-  num: 0,
-  address: "成都市高新区",
-  emissionLoad: "",
-  region: "",
-  type: "工业园区",
-  reduce: "",
-};
-let parkStatistics = [
-  {
-    id: 0,
-    name: "工业用电",
-    emissionLoad: "1548.154",
-    carbonEquivalent: "2266",
-    startTime: "2022/7/11",
-  },
-  {
-    id: 1,
-    name: "交通用电",
-    emissionLoad: "1548.154",
-    carbonEquivalent: "2266",
-    startTime: "2022/7/11",
-  },
-];
-let detailsList = [
-  {
-    name: "工业用能排放",
-    list: [
-      {
-        detailsName: "国网电",
-        num: "1189232",
-        emissionLoad: "0.581",
-        carbonEquivalent: "690943.792",
-      },
-      {
-        detailsName: "水电",
-        num: "1189232",
-        emissionLoad: "0.581",
-        carbonEquivalent: "690943.792",
-      },
-      {
-        detailsName: "风电",
-        num: "1189232",
-        emissionLoad: "0.581",
-        carbonEquivalent: "690943.792",
-      },
-      {
-        detailsName: "火电",
-        num: "1189232",
-        emissionLoad: "0.581",
-        carbonEquivalent: "690943.792",
-      },
-    ],
-  },
-];
+
 
 const ExportPdf = ({
   pdfShow,
@@ -108,18 +49,18 @@ const ExportPdf = ({
                 <span>{pdfParkInfo.type}</span>
               </div>
               <div className={styles.infoBox}>
-                <span>年份</span>
-                <span>{pdfParkInfo.create_time}</span>
-              </div>
-              <div className={styles.infoBox}>
                 <span>地址</span>
                 <span>{pdfParkInfo.address}</span>
+              </div>
+              <div className={styles.infoBox}>
+                <span>时间</span>
+                <span>{pdfParkInfo.create_time}</span>
               </div>
               <div className={styles.title}>排放信息</div>
               {pdfParkInfo.emissionInfo.map((item, index: number) => {
                 return (
                   <div className={styles.infoBox} key={index}>
-                    <span>{item.name}</span>
+                    <span>{item.name} （KWH）</span>
                     <span>{item.emissionLoad}</span>
                   </div>
                 );
@@ -148,7 +89,7 @@ const ExportPdf = ({
                       </div>
                       <div className={styles.detailsItem}>
                         {item.list.map((details, i) => {
-                          return <span key={i}>{details.emission_load}</span>;
+                          return <span key={i}>{details.emission}</span>;
                         })}
                       </div>
                       <div className={styles.detailsItem}>
@@ -160,7 +101,7 @@ const ExportPdf = ({
                       </div>
                       <div className={styles.detailsItem}>
                         {item.list.map((details, i) => {
-                          return <span key={i}>{details.emission}</span>;
+                          return <span key={i}>{details.emission_load}</span>;
                         })}
                       </div>
                     </div>
