@@ -109,7 +109,7 @@ const MapChart = ({
                       tooltips.length != 1 &&
                       "margin-bottom: 10px;"
                     } ">
-                    <img src=${markIconMap.get(item.id)}/>
+                    <img src=${markIconMap.get(item.id)}>
                     <span style="font-size: 16px;color: #000;">${
                       item.name
                     }</span>
