@@ -17,6 +17,7 @@ function Mymap({
       disableDefaultUI: true,
       center: center,//设置地图中心点坐标
       zoom: 16,   //设置地图缩放级别
+      maxZoom: 15,
       baseMap: {  // 设置卫星地图
         type: 'satellite',
         features: ['base', 'building2d']

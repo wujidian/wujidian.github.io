@@ -4,7 +4,7 @@ import ParkCard from "@components/ParkCard/ParkCard";
 import TotalCount from "@components/TotalCount/TotalCount";
 import Mymap from "@components/Mymap/Mymap";
 import MySkeleton from "@components/MySkeleton";
-import ExportPdf from "@components/exportPdf";
+import ExportPdf from "@components/ExportPdf";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import {
@@ -103,11 +103,19 @@ const ParkFootprint: NextPage = () => {
       return;
     }
     setcheckBoxShow(false);
+    dispatch({
+      type: "UPDATE_LOAD",
+      payload: true,
+    })
     let res = await CREATE_PARK_REPORT_API(parkId, {
       startTime,
       endTime,
       activityId: activeList.join(","),
     });
+    dispatch({
+      type: "UPDATE_LOAD",
+      payload: false,
+    })
     setPdfParkInfo(res.data);
     setPdfShow(true);
   };

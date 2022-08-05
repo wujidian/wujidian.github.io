@@ -101,7 +101,7 @@ const ExportPdf = ({
                       </div>
                       <div className={styles.detailsItem}>
                         {item.list.map((details, i) => {
-                          return <span key={i}>{details.emission_load}</span>;
+                          return <span key={i}>{(Number(details.emission_load) * 1000)}</span>;
                         })}
                       </div>
                     </div>

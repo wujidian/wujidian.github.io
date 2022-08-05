@@ -6,9 +6,10 @@ import type { AppProps } from "next/app";
 import Layout from "@components/Layout/Layout";
 import MyContextWrapper from "@components/MyContext/MyContext";
 import MapScrtpi from "@components/MapScript/MapScript";
-import { ConfigProvider } from "antd";
+import { ConfigProvider, Spin } from "antd";
 import zhCN from "antd/es/locale/zh_CN";
 import Head from "next/head";
+import Load from "@components/Load";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -22,6 +23,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Layout>
           <Component {...pageProps} />
         </Layout>
+        <Load></Load>
       </MyContextWrapper>
     </div>
   );

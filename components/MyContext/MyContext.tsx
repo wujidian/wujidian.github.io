@@ -9,6 +9,7 @@ interface initialStateType {
   parkFootprintInfoId: string | null;
   enterpriseFootprintInfoId: string | null;
   enterpriseFootprintDetailsId: string | null;
+  load: boolean;
 }
 // const initialState = {
 //   loginStatus: getLoc("token") ? login_Status.login : login_Status.notLogin,
@@ -39,6 +40,7 @@ const MyContextWrapper = ({ children: children }: any) => {
     parkFootprintInfoId: "0",
     enterpriseFootprintInfoId: "0",
     enterpriseFootprintDetailsId: "0",
+    load: false,
   });
   let [initialization, setInitialization] = useState(false);
   function reducer(state = initialState, action: any) {
@@ -78,6 +80,11 @@ const MyContextWrapper = ({ children: children }: any) => {
           ...state,
           enterpriseFootprintDetailsId: payload,
         };
+      case "UPDATE_LOAD":
+        return {
+          ...state,
+          load: payload,
+        };
       default:
         return state;
     }
@@ -109,19 +116,19 @@ const MyContextWrapper = ({ children: children }: any) => {
     dispatch({
       type: "UPDATE_PARK_ID",
       payload: parkId,
-    })
+    });
     dispatch({
       type: "UPDATE_PARK_FOOTPRINT_INFO_ID",
       payload: parkFootprintInfoId,
-    })
+    });
     dispatch({
       type: "UPDATE_ENTERPRISE_FOOTPRINT_INFO_ID",
       payload: enterpriseFootprintInfoId,
-    })
+    });
     dispatch({
       type: "UPDATE_ENTERPRISE_FOOTPRINT_DETAILS_ID",
       payload: enterpriseFootprintDetailsId,
-    })
+    });
     setInitialization(true);
   }, []);
 

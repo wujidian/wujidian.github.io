@@ -1,5 +1,5 @@
 import CheckDetailsBTN from "@components/CheckDetailsBTN/CheckDetailsBTN";
-import ExportPdf from "@components/exportPdf";
+import ExportPdf from "@components/ExportPdf";
 import { InfoCardData } from "@components/InfoCard/InfoCard";
 import LineChart from "@components/LineChart/LineChart";
 import MiniCard, { MiniCardProps } from "@components/MiniCard/MiniCard";
@@ -150,11 +150,19 @@ const EnterpriseFootprintInfo: NextPage = () => {
       return;
     }
     setcheckBoxShow(false);
+    dispatch({
+      type: "UPDATE_LOAD",
+      payload: true,
+    })
     let res = await CREATE_ENTERPRISE_REPORT_API(enterpriseFootprintInfoId, {
       startTime,
       endTime,
       activityId: activeList.join(","),
     });
+    dispatch({
+      type: "UPDATE_LOAD",
+      payload: false,
+    })
     setPdfParkInfo(res.data);
     setPdfShow(true);
   };
