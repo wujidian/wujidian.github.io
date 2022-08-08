@@ -1,3 +1,4 @@
+import { Popover } from "antd";
 import style from "./MiniCard.module.sass";
 
 /**
@@ -18,11 +19,19 @@ export type MiniCardProps = {
 };
 
 const MiniCard = (MiniCardProps: MiniCardProps) => {
-  const { title, iconImg, time, emissions, appendButto, linkFun, type,dataTitle,children } =
-    MiniCardProps;
+  const {
+    title,
+    iconImg,
+    time,
+    emissions,
+    appendButto,
+    linkFun,
+    type,
+    dataTitle,
+    children,
+  } = MiniCardProps;
   return (
     <div className={style.miniCardBox} onClick={linkFun}>
-      
       <div className={style.miniCardIconBox}>
         <img src={iconImg} alt="" />
         <span>{title}</span>
@@ -31,7 +40,9 @@ const MiniCard = (MiniCardProps: MiniCardProps) => {
         <div className={style.miniCardTimeBox}>
           <span className={style.tipsTitle}>活动类型</span>
           <span className={style.miniCardIconBox}>
-            <span>{type || '暂无信息'}</span>
+            <Popover content={type} title="">
+              <span className={style.ellipsis}>{type || "暂无信息"}</span>
+            </Popover>
           </span>
         </div>
       )}
@@ -43,8 +54,11 @@ const MiniCard = (MiniCardProps: MiniCardProps) => {
         </span>
       </div>
       {emissions && (
-        <div className={style.miniCardTipsTitleBox} style={appendButto && {width:"100%"}}>
-          <span className={style.tipsTitle}>{dataTitle || '碳排放量'}</span>
+        <div
+          className={style.miniCardTipsTitleBox}
+          style={appendButto && { width: "100%" }}
+        >
+          <span className={style.tipsTitle}>{dataTitle || "碳排放量"}</span>
           <div>
             <span className={style.emissions}>{emissions}</span>
             <span className="goldenlabel">tCO2e</span>
@@ -52,7 +66,6 @@ const MiniCard = (MiniCardProps: MiniCardProps) => {
         </div>
       )}
       {appendButto}
-      
     </div>
   );
 };
