@@ -258,8 +258,8 @@ const EnterpriseFootprintDetails: NextPage = () => {
             name={avtiveInfo.activityName}
             loc={avtiveInfo.name}
             addOrSub={false}
-            total={avtiveInfo.reduce}
-            deviation={avtiveInfo.emissionLoad}
+            total={avtiveInfo.emissionLoad}
+            deviation={avtiveInfo.reduce}
           ></InfoCard>
         ) : (
           <MySkeleton />
