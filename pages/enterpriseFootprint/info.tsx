@@ -1,6 +1,6 @@
 import CheckDetailsBTN from "@components/CheckDetailsBTN/CheckDetailsBTN";
-import ExportPdf from "@components/ExportPdf";
 import LineChart from "@components/LineChart/LineChart";
+import ExportPdf from "@components/ExportPdf/ExportPdf";
 import MiniCard, { MiniCardProps } from "@components/MiniCard/MiniCard";
 import { MyContext } from "@components/MyContext/MyContext";
 import MySkeleton from "@components/MySkeleton";

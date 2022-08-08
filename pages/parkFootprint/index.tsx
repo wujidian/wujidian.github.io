@@ -4,7 +4,7 @@ import ParkCard from "@components/ParkCard/ParkCard";
 import TotalCount from "@components/TotalCount/TotalCount";
 import Mymap from "@components/Mymap/Mymap";
 import MySkeleton from "@components/MySkeleton";
-import ExportPdf from "@components/ExportPdf";
+import ExportPdf from "@components/ExportPdf/ExportPdf";
 import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import {
