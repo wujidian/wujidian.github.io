@@ -189,10 +189,6 @@ const EnterpriseFootprintInfo: NextPage = () => {
   };
 
   useEffect(() => {
-    getEnterpriseInfo();
-    getEnterpriseDayBase();
-  }, [enterpriseFootprintInfoId]);
-  useEffect(() => {
     getEnterpriseEchartsData();
   }, [enterpriseFootprintInfoId, timeType]);
   useEffect(() => {
@@ -200,6 +196,8 @@ const EnterpriseFootprintInfo: NextPage = () => {
   }, [enterpriseFootprintInfoId, pdfShow]);
   //进入页面后 每15秒调用一次 getPDFExportRecords函数
   useEffect(() => {
+    getEnterpriseInfo();
+    getEnterpriseDayBase();
     let timer = setInterval(() => {
       getPDFExportRecords(enterpriseFootprintInfoId);
     }, 15000);
