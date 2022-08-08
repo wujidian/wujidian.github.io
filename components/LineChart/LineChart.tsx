@@ -86,7 +86,7 @@ const LineChart: NextPage<LineChartPorps> = (porps: LineChartPorps) => {
     series: [
       {
         name: parkId != 3 ? "碳排放量" : "碳汇量",
-        data: park_carbonEquivalent,
+        data: park_emissionLoad,
         type: "line",
         smooth: true,
         connectNulls: true,
