@@ -6,7 +6,7 @@ import { createParkReport } from "types/types";
 import styles from "./index.module.sass";
 
 
-const ExportPdf = ({
+const ExportPdfModel = ({
   pdfShow,
   onCancel,
   pdfParkInfo,
@@ -115,4 +115,4 @@ const ExportPdf = ({
     </div>
   );
 };
-export default ExportPdf;
+export default ExportPdfModel;

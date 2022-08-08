@@ -1,6 +1,6 @@
 import CheckDetailsBTN from "@components/CheckDetailsBTN/CheckDetailsBTN";
 import LineChart from "@components/LineChart/LineChart";
-// import ExportPdf from "@components/ExportPdf/ExportPdf";
+import ExportPdf from "@components/ExportPdf/ExportPdf";
 import MiniCard, { MiniCardProps } from "@components/MiniCard/MiniCard";
 import { MyContext } from "@components/MyContext/MyContext";
 import MySkeleton from "@components/MySkeleton";
@@ -359,11 +359,11 @@ const EnterpriseFootprintInfo: NextPage = () => {
           }}
         />
       </Modal>
-      {/* <ExportPdf
+      <ExportPdf
         pdfShow={pdfShow}
         onCancel={() => setPdfShow(false)}
         pdfParkInfo={pdfParkInfo as createParkReport["data"]}
-      /> */}
+      />
     </div>
   );
 };
