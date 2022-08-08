@@ -22,7 +22,8 @@ import { Button, Checkbox, DatePicker, message, Modal, Spin } from "antd";
 import { CheckboxValueType } from "antd/lib/checkbox/Group";
 import CheckDetailsBTN from "@components/CheckDetailsBTN/CheckDetailsBTN";
 export const btnStyel = {
-  width: "50%",
+  maxWidth: "120px",
+  width: "100%",
   background: "#F1FCF8",
   color: "#10B482",
   border: "none",

@@ -22,7 +22,8 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { company_Info, createParkReport, parkReportList } from "types/types";
 export const btnStyel = {
-  width: "50%",
+  maxWidth: "120px",
+  width: "100%",
   background: "#F1FCF8",
   color: "#10B482",
   border: "none",

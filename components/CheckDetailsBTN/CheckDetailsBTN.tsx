@@ -5,6 +5,8 @@ interface checkDetailsBTNProps {
   btnClickFun?: () => void;
 }
 export const btnStyel = {
+  maxWidth: "120px",
+  width: "100%",
   background: "#F1FCF8",
   color: "#10B482",
   border: "none",
