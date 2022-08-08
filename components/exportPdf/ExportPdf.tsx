@@ -1,7 +1,5 @@
 import exportPDF from "@public/exportPDF";
-import { Modal, Checkbox, Space, DatePicker } from "antd";
-import { CheckboxValueType } from "antd/lib/checkbox/Group";
-import { useEffect, useState } from "react";
+import { Modal } from "antd";
 import { createParkReport } from "types/types";
 import styles from "./index.module.sass";
 
