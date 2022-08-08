@@ -15,7 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <div>
       <Head>
-        <title>绿色碳链-可信绿色数据服务平台</title>
+        <title>绿链数能综合服务系统</title>
         <link rel="icon" href="/logo.png" />
       </Head>
       <MapScrtpi></MapScrtpi>

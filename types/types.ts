@@ -111,10 +111,11 @@ export type park_TableApi = (
 /**园区碳足迹报告列表返回结构*/
 export interface parkReportList extends success_Response {
   data: Array<{
-    id: 1;
+    id: number;
     name: string;
     activity_name: string;
     create_time: string;
+    status: number;
   }>;
 }
 export type getparkReportListApi = (parkid: number) => Promise<parkReportList>;

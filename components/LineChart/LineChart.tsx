@@ -65,7 +65,6 @@ const LineChart: NextPage<LineChartPorps> = (porps: LineChartPorps) => {
     },
     grid: {
       //图表位置的偏移量
-      left: "5%",
       right: "5%",
       bottom: "8%",
     },

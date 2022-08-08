@@ -15,17 +15,36 @@ import {
   GET_ENTERPRISE_CARBON_INFO_API,
   VIEW_ENTERPRISE_RECORDS_PDF_API,
 } from "@request/apis";
-import { Modal, Checkbox, message, DatePicker } from "antd";
+import { Modal, Checkbox, message, DatePicker, Button, Spin } from "antd";
 import { CheckboxValueType } from "antd/lib/checkbox/Group";
 import type { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { company_Info, createParkReport, parkReportList } from "types/types";
+export const btnStyel = {
+  width: "50%",
+  background: "#F1FCF8",
+  color: "#10B482",
+  border: "none",
+};
+const LoadBTN = () => {
+  return (
+    <Button
+      onClick={() => message.error("报告生成中，请稍后再试")}
+      style={btnStyel}
+      type="primary"
+      shape="round"
+    >
+      报告生成中 &nbsp;
+      <Spin size="small" />
+    </Button>
+  );
+};
 
 const EnterpriseFootprintInfo: NextPage = () => {
   const { state, dispatch } = useContext(MyContext) as any;
-  const { enterpriseFootprintInfoId,parkId } = state;
+  const { enterpriseFootprintInfoId, parkId } = state;
   const router = useRouter();
   const { RangePicker } = DatePicker;
 
@@ -150,21 +169,12 @@ const EnterpriseFootprintInfo: NextPage = () => {
       return;
     }
     setcheckBoxShow(false);
-    dispatch({
-      type: "UPDATE_LOAD",
-      payload: true,
-    })
-    let res = await CREATE_ENTERPRISE_REPORT_API(enterpriseFootprintInfoId, {
+    await CREATE_ENTERPRISE_REPORT_API(enterpriseFootprintInfoId, {
       startTime,
       endTime,
       activityId: activeList.join(","),
     });
-    dispatch({
-      type: "UPDATE_LOAD",
-      payload: false,
-    })
-    setPdfParkInfo(res.data);
-    setPdfShow(true);
+    getPDFExportRecords(enterpriseFootprintInfoId);
   };
 
   /**获取企业碳核算报告*/
@@ -188,6 +198,15 @@ const EnterpriseFootprintInfo: NextPage = () => {
   useEffect(() => {
     getPDFExportRecords(enterpriseFootprintInfoId);
   }, [enterpriseFootprintInfoId, pdfShow]);
+  //进入页面后 每15秒调用一次 getPDFExportRecords函数
+  useEffect(() => {
+    let timer = setInterval(() => {
+      getPDFExportRecords(enterpriseFootprintInfoId);
+    }, 15000);
+    return () => {
+      clearInterval(timer);
+    };
+  }, [enterpriseFootprintInfoId]);
   return (
     <div className="parkFootprint">
       <div className="m24">
@@ -226,7 +245,7 @@ const EnterpriseFootprintInfo: NextPage = () => {
       <div className="lineChartBox">
         {enterpriseEchartsLoding ? (
           <LineChart
-            park_name={'企业碳足迹'}
+            park_name={"企业碳足迹"}
             toDay_data={0}
             park_xAxisData={park_xAxisData}
             park_carbonEquivalent={park_carbonEquivalent}
@@ -262,9 +281,11 @@ const EnterpriseFootprintInfo: NextPage = () => {
         <div>
           <span className="pageTitle">企业碳核算报告 </span>
           <span className="mr5"> 生成依据 </span>
-          <span className="blueTip">{
-            parkId == 3 ? '《林业碳汇项目审定和核证指南》GB/T 41198-2021' : '《企业温室气体排放核算方法与报告指南》'
-          }</span>
+          <span className="blueTip">
+            {parkId == 3
+              ? "《林业碳汇项目审定和核证指南》GB/T 41198-2021"
+              : "《企业温室气体排放核算方法与报告指南》"}
+          </span>
         </div>
         <button
           className="viewRecords"
@@ -286,12 +307,16 @@ const EnterpriseFootprintInfo: NextPage = () => {
               type={item.activity_name}
               key={i.toString()}
               appendButto={
-                <CheckDetailsBTN
-                  btnText="查看报告"
-                  btnClickFun={() => {
-                    viewRecordsPDF(item.id);
-                  }}
-                />
+                item.status == 2 ? (
+                  <CheckDetailsBTN
+                    btnText="查看报告"
+                    btnClickFun={() => {
+                      viewRecordsPDF(item.id);
+                    }}
+                  />
+                ) : (
+                  <LoadBTN />
+                )
               }
             ></MiniCard>
           );
@@ -299,7 +324,7 @@ const EnterpriseFootprintInfo: NextPage = () => {
       </div>
 
       <Modal
-        title="选择报告"
+        title="选择报告生成范围"
         visible={checkBoxShow}
         onOk={() => {
           createReport();
@@ -309,6 +334,7 @@ const EnterpriseFootprintInfo: NextPage = () => {
         okText="确定"
       >
         <div style={{ margin: "0 0 40px 0" }}>
+          <span className="modalTitle">选择活动类型</span>
           <Checkbox.Group
             options={miniCardList.map((item, i) => {
               return {
@@ -322,6 +348,7 @@ const EnterpriseFootprintInfo: NextPage = () => {
             }}
           />
         </div>
+        <div className="modalTitle">选择时间</div>
         <RangePicker
           format="YYYY/MM/DD"
           onChange={(e) => {

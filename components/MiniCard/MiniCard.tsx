@@ -14,13 +14,15 @@ export type MiniCardProps = {
   linkFun?: () => void;
   appendButto?: JSX.Element | any;
   dataTitle?: string;
+  children?: JSX.Element | any;
 };
 
 const MiniCard = (MiniCardProps: MiniCardProps) => {
-  const { title, iconImg, time, emissions, appendButto, linkFun, type,dataTitle } =
+  const { title, iconImg, time, emissions, appendButto, linkFun, type,dataTitle,children } =
     MiniCardProps;
   return (
     <div className={style.miniCardBox} onClick={linkFun}>
+      
       <div className={style.miniCardIconBox}>
         <img src={iconImg} alt="" />
         <span>{title}</span>
@@ -50,6 +52,7 @@ const MiniCard = (MiniCardProps: MiniCardProps) => {
         </div>
       )}
       {appendButto}
+      
     </div>
   );
 };

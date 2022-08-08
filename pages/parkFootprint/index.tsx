@@ -18,9 +18,28 @@ import {
 import { useContext, useEffect, useState } from "react";
 import { createParkReport, parkReportList, park_Info } from "types/types";
 import { MyContext } from "@components/MyContext/MyContext";
-import { Button, Checkbox, DatePicker, message, Modal } from "antd";
+import { Button, Checkbox, DatePicker, message, Modal, Spin } from "antd";
 import { CheckboxValueType } from "antd/lib/checkbox/Group";
 import CheckDetailsBTN from "@components/CheckDetailsBTN/CheckDetailsBTN";
+export const btnStyel = {
+  width: "50%",
+  background: "#F1FCF8",
+  color: "#10B482",
+  border: "none",
+};
+const LoadBTN = () => {
+  return (
+    <Button
+      onClick={()=>message.error("报告生成中，请稍后再试")}
+      style={btnStyel}
+      type="primary"
+      shape="round"
+    >
+      报告生成中 &nbsp;
+      <Spin size="small" />
+    </Button>
+  );
+};
 
 const ParkFootprint: NextPage = () => {
   const router = useRouter();
@@ -103,21 +122,20 @@ const ParkFootprint: NextPage = () => {
       return;
     }
     setcheckBoxShow(false);
-    dispatch({
-      type: "UPDATE_LOAD",
-      payload: true,
-    })
-    let res = await CREATE_PARK_REPORT_API(parkId, {
-      startTime,
-      endTime,
-      activityId: activeList.join(","),
-    });
-    dispatch({
-      type: "UPDATE_LOAD",
-      payload: false,
-    })
-    setPdfParkInfo(res.data);
-    setPdfShow(true);
+    try {
+      await CREATE_PARK_REPORT_API(parkId, {
+        startTime,
+        endTime,
+        activityId: activeList.join(","),
+      });
+    } catch {
+      dispatch({
+        type: "UPDATE_LOAD",
+        payload: false,
+      });
+      message.error("创建报表失败,请稍后重试");
+    }
+    getPDFExportRecords(parkId);
   };
 
   const toParkFootprintInfo = (id: string | number) => {
@@ -173,7 +191,7 @@ const ParkFootprint: NextPage = () => {
           time: item.startTime,
           iconImg: "/images/Group.png",
         };
-      });      
+      });
       setMiniCardList([...statisticsInfoData]);
     } catch {}
     setActiveParkInfoShow(true);
@@ -182,7 +200,7 @@ const ParkFootprint: NextPage = () => {
   const getPDFExportRecords = async (parkId: number) => {
     try {
       let res = await GET_PARK_REPORT_LIST_API(parkId);
-      let PDFExportRecords = res.data.reverse()
+      let PDFExportRecords = res.data.reverse();
       setPDFExportRecords([...PDFExportRecords]);
     } catch {}
   };
@@ -201,6 +219,16 @@ const ParkFootprint: NextPage = () => {
   useEffect(() => {
     getPDFExportRecords(parkId);
   }, [parkId, pdfShow]);
+
+  //进入页面后 每15秒调用一次 getPDFExportRecords函数
+  useEffect(() => {
+    let timer = setInterval(() => {
+      getPDFExportRecords(parkId);
+    }, 15000);
+    return () => {
+      clearInterval(timer);
+    };
+  }, [parkId]);
 
   return (
     <div className="parkFootprint">
@@ -221,7 +249,11 @@ const ParkFootprint: NextPage = () => {
         <div className="TotalCount-box">
           {parkInfoShow ? (
             <TotalCount
-              title={`${parkInfo.id==3?'林区本年度累计碳信用总量':"园区本年度碳排放总量"}`}
+              title={`${
+                parkInfo.id == 3
+                  ? "林区本年度累计碳信用总量"
+                  : "园区本年度碳排放总量"
+              }`}
               total={parkInfo.emissionLoad}
               addOrsub={false}
               deviation={parkInfo.reduce}
@@ -234,7 +266,7 @@ const ParkFootprint: NextPage = () => {
       <div className="lineChartBox">
         {parkEchartsShow ? (
           <LineChart
-            park_name={`${parkInfo.id==3?'林区':"园区"}碳足迹`}
+            park_name={`${parkInfo.id == 3 ? "林区" : "园区"}碳足迹`}
             toDay_data={0}
             park_xAxisData={park_xAxisData}
             park_carbonEquivalent={park_carbonEquivalent}
@@ -268,7 +300,7 @@ const ParkFootprint: NextPage = () => {
                   iconImg={item.iconImg}
                   emissions={item.emissions}
                   key={i.toString()}
-                  dataTitle={parkId==3?"碳汇量":"碳排放量"}
+                  dataTitle={parkId == 3 ? "碳汇量" : "碳排放量"}
                 ></MiniCard>
               );
             })}
@@ -280,11 +312,15 @@ const ParkFootprint: NextPage = () => {
 
       <div className="m24 flex jcsbcentennt">
         <div>
-          <span className="pageTitle">{`${parkInfo.id==3?'林区':"园区"}碳核算报告`}</span>
+          <span className="pageTitle">{`${
+            parkInfo.id == 3 ? "林区" : "园区"
+          }碳核算报告`}</span>
           <span className="mr5"> 生成依据 </span>
-          <span className="blueTip">{
-            parkId == 3 ? '《林业碳汇项目审定和核证指南》GB/T 41198-2021' : '《企业温室气体排放核算方法与报告指南》'
-          }</span>
+          <span className="blueTip">
+            {parkId == 3
+              ? "《林业碳汇项目审定和核证指南》GB/T 41198-2021"
+              : "《企业温室气体排放核算方法与报告指南》"}
+          </span>
         </div>
         <button className="viewRecords" onClick={() => setcheckBoxShow(true)}>
           生成报告
@@ -302,12 +338,16 @@ const ParkFootprint: NextPage = () => {
               type={item.activity_name}
               key={i.toString()}
               appendButto={
-                <CheckDetailsBTN
-                  btnText="查看报告"
-                  btnClickFun={() => {
-                    viewRecordsPDF(item.id);
-                  }}
-                />
+                item.status == 2 ? (
+                  <CheckDetailsBTN
+                    btnText="查看报告"
+                    btnClickFun={() => {
+                      viewRecordsPDF(item.id);
+                    }}
+                  />
+                ) : (
+                  <LoadBTN />
+                )
               }
             ></MiniCard>
           );
@@ -315,7 +355,7 @@ const ParkFootprint: NextPage = () => {
       </div>
 
       <Modal
-        title="选择报告"
+        title="选择报告生成范围"
         visible={checkBoxShow}
         onOk={() => {
           createReport();
@@ -324,6 +364,7 @@ const ParkFootprint: NextPage = () => {
         cancelText="取消"
         okText="确定"
       >
+        <span className="modalTitle">选择活动类型</span>
         <div style={{ margin: "0 0 40px 0" }}>
           <Checkbox.Group
             options={miniCardList.map((item, i) => {
@@ -338,6 +379,7 @@ const ParkFootprint: NextPage = () => {
             }}
           />
         </div>
+        <div className="modalTitle">选择时间</div>
         <RangePicker
           format="YYYY/MM/DD"
           onChange={(e) => {
